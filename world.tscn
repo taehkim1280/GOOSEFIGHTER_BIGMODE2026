@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://cqhibs4lgurh8"]
+
+[ext_resource type="Script" uid="uid://bfmcigtn3wt52" path="res://goose.gd" id="1_f3sb7"]
+[ext_resource type="Script" uid="uid://bsyfdo60t10pr" path="res://camera_3d.gd" id="2_fj7yv"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fj7yv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tlwt5"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_aqk2v"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_036b0"]
+
+[node name="World" type="Node3D" unique_id=74445810]
+
+[node name="Ground" type="StaticBody3D" parent="." unique_id=387867698]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=350166391]
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
+mesh = SubResource("PlaneMesh_fj7yv")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=351668632]
+shape = SubResource("BoxShape3D_tlwt5")
+
+[node name="Goose" type="CharacterBody3D" parent="." unique_id=1676621756]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.55401707, 0)
+script = ExtResource("1_f3sb7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Goose" unique_id=1489755261]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.084928274, 0)
+mesh = SubResource("CapsuleMesh_aqk2v")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Goose" unique_id=1006528382]
+shape = SubResource("CapsuleShape3D_036b0")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1346949853]
+transform = Transform3D(0.70710677, -0.4055798, 0.579228, 0, 0.81915206, 0.57357645, -0.70710677, -0.4055798, 0.579228, 10, 10, 10)
+projection = 1
+size = 10.0
+script = ExtResource("2_fj7yv")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1109783111]
