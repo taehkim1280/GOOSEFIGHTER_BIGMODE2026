@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://duqlr3ra2icql"]
+
+[ext_resource type="Script" uid="uid://ditniiv2afohk" path="res://explosive_cask.gd" id="1_q0qkm"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1g5he"]
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mcv2b"]
+transparency = 1
+albedo_color = Color(1, 1, 0.011764706, 1)
+
+[node name="ExplosiveCask" type="Node3D" unique_id=460658420]
+script = ExtResource("1_q0qkm")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2043452029]
+mesh = SubResource("CylinderMesh_1g5he")
+surface_material_override/0 = SubResource("StandardMaterial3D_mcv2b")

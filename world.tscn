@@ -1,16 +1,20 @@
 [gd_scene format=3 uid="uid://cqhibs4lgurh8"]
 
 [ext_resource type="Script" uid="uid://bfmcigtn3wt52" path="res://goose.gd" id="1_f3sb7"]
+[ext_resource type="PackedScene" uid="uid://bxp3mer64vbso" path="res://debug_attackline.tscn" id="2_036b0"]
 [ext_resource type="Script" uid="uid://bsyfdo60t10pr" path="res://camera_3d.gd" id="2_fj7yv"]
+[ext_resource type="PackedScene" uid="uid://duqlr3ra2icql" path="res://explosive_cask.tscn" id="3_dwbse"]
 [ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://enemy.tscn" id="3_tlwt5"]
+[ext_resource type="Script" uid="uid://cpmpq25kjfyw0" path="res://enemy_spawner.gd" id="4_aqk2v"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_fj7yv"]
 
 [sub_resource type="Gradient" id="Gradient_fj7yv"]
+colors = PackedColorArray(0.6147603, 0.3720098, 0.99999005, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_tlwt5"]
 gradient = SubResource("Gradient_fj7yv")
-fill_to = Vector2(1, 1)
+fill_to = Vector2(1, 0.959596)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fj7yv"]
 albedo_color = Color(0.87058824, 0.96862745, 1, 1)
@@ -42,9 +46,12 @@ sky_material = SubResource("ProceduralSkyMaterial_fj7yv")
 background_mode = 2
 sky = SubResource("Sky_tlwt5")
 
+[sub_resource type="GDScript" id="GDScript_036b0"]
+
 [node name="World" type="Node3D" unique_id=74445810]
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=387867698]
+collision_mask = 0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=350166391]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
@@ -54,9 +61,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_fj7yv")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=351668632]
 shape = SubResource("BoxShape3D_tlwt5")
 
-[node name="Goose" type="CharacterBody3D" parent="." unique_id=1676621756]
+[node name="Goose" type="CharacterBody3D" parent="." unique_id=1676621756 groups=["player"]]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.55401707, 0)
+collision_layer = 2
 script = ExtResource("1_f3sb7")
+attack_line_scene = ExtResource("2_036b0")
+explosion_scene = ExtResource("3_dwbse")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Goose" unique_id=1489755261]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.084928274, 0)
@@ -67,6 +77,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_dwbse")
 shape = SubResource("CapsuleShape3D_036b0")
 
 [node name="AttackArea" type="Area3D" parent="Goose" unique_id=1678143826]
+collision_layer = 0
+collision_mask = 4
 monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Goose/AttackArea" unique_id=120634949]
@@ -90,8 +102,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.194148, 0)
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=826461761]
 environment = SubResource("Environment_fj7yv")
 
-[node name="Enemy" parent="." unique_id=1713418842 instance=ExtResource("3_tlwt5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.177, 1, 12.165)
+[node name="Enemy Spawner" type="Node3D" parent="." unique_id=1709805554]
+script = ExtResource("4_aqk2v")
+enemy_scene = ExtResource("3_tlwt5")
 
-[node name="Enemy" parent="Enemy" unique_id=1607428551 instance=ExtResource("3_tlwt5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.644, 0, -20.820059)
+[node name="Timer" type="Timer" parent="Enemy Spawner" unique_id=792405949]
+wait_time = 3.0
+autostart = true
+script = SubResource("GDScript_036b0")
+
+[connection signal="timeout" from="Enemy Spawner/Timer" to="Enemy Spawner" method="_on_timer_timeout"]
