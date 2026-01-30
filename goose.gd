@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 const SPEED = 7.0
+@onready var attack_area = $AttackArea
 
 func _physics_process(_delta: float) -> void:
 	# get input vector
@@ -23,3 +24,15 @@ func _physics_process(_delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	move_and_slide()
+	
+func _input(event):
+	if event.is_action_pressed("ui_accept"): # spacebar
+		attack()
+
+func attack():
+	print("Honk! Attacking...")
+	# get all enemies in attack area
+	var targets = attack_area.get_overlapping_bodies()
+	for target in targets:
+		if target.has_method("die"):
+			target.die()

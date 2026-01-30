@@ -2,15 +2,45 @@
 
 [ext_resource type="Script" uid="uid://bfmcigtn3wt52" path="res://goose.gd" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://bsyfdo60t10pr" path="res://camera_3d.gd" id="2_fj7yv"]
+[ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://enemy.tscn" id="3_tlwt5"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_fj7yv"]
+
+[sub_resource type="Gradient" id="Gradient_fj7yv"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_tlwt5"]
+gradient = SubResource("Gradient_fj7yv")
+fill_to = Vector2(1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fj7yv"]
+albedo_color = Color(0.87058824, 0.96862745, 1, 1)
+albedo_texture = SubResource("GradientTexture2D_tlwt5")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tlwt5"]
 size = Vector3(20, 1, 20)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_aqk2v"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dwbse"]
+uv1_scale = Vector3(40, 40, 1)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_036b0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fj7yv"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_tlwt5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aqk2v"]
+albedo_color = Color(0.9999998, 0.562116, 0.05854375, 1)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
+
+[sub_resource type="Sky" id="Sky_tlwt5"]
+sky_material = SubResource("ProceduralSkyMaterial_fj7yv")
+
+[sub_resource type="Environment" id="Environment_fj7yv"]
+background_mode = 2
+sky = SubResource("Sky_tlwt5")
 
 [node name="World" type="Node3D" unique_id=74445810]
 
@@ -19,6 +49,7 @@ size = Vector3(20, 1, 20)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=350166391]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
 mesh = SubResource("PlaneMesh_fj7yv")
+surface_material_override/0 = SubResource("StandardMaterial3D_fj7yv")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=351668632]
 shape = SubResource("BoxShape3D_tlwt5")
@@ -30,9 +61,22 @@ script = ExtResource("1_f3sb7")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Goose" unique_id=1489755261]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.084928274, 0)
 mesh = SubResource("CapsuleMesh_aqk2v")
+surface_material_override/0 = SubResource("StandardMaterial3D_dwbse")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Goose" unique_id=1006528382]
 shape = SubResource("CapsuleShape3D_036b0")
+
+[node name="AttackArea" type="Area3D" parent="Goose" unique_id=1678143826]
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Goose/AttackArea" unique_id=120634949]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.0129756)
+shape = SubResource("BoxShape3D_fj7yv")
+
+[node name="Beak" type="MeshInstance3D" parent="Goose" unique_id=2049706699]
+transform = Transform3D(0.3, 0, 0, 0, 0.2, 0, 0, 0, 0.4, 0, 0.5, -0.6)
+mesh = SubResource("BoxMesh_tlwt5")
+surface_material_override/0 = SubResource("StandardMaterial3D_aqk2v")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1346949853]
 transform = Transform3D(0.70710677, -0.4055798, 0.579228, 0, 0.81915206, 0.57357645, -0.70710677, -0.4055798, 0.579228, 10, 10, 10)
@@ -41,3 +85,13 @@ size = 10.0
 script = ExtResource("2_fj7yv")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1109783111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.194148, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=826461761]
+environment = SubResource("Environment_fj7yv")
+
+[node name="Enemy" parent="." unique_id=1713418842 instance=ExtResource("3_tlwt5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.177, 1, 12.165)
+
+[node name="Enemy" parent="Enemy" unique_id=1607428551 instance=ExtResource("3_tlwt5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.644, 0, -20.820059)
