@@ -1,24 +1,26 @@
-[gd_scene format=3 uid="uid://cqhibs4lgurh8"]
+[gd_scene format=3 uid="uid://crmist5ct07gu"]
 
-[ext_resource type="Script" uid="uid://bfmcigtn3wt52" path="res://goose.gd" id="1_f3sb7"]
+[ext_resource type="Script" path="res://goose.gd" id="1_f3sb7"]
 [ext_resource type="PackedScene" uid="uid://bxp3mer64vbso" path="res://debug_attackline.tscn" id="2_036b0"]
-[ext_resource type="Script" uid="uid://bsyfdo60t10pr" path="res://camera_3d.gd" id="2_fj7yv"]
+[ext_resource type="Script" path="res://camera_3d.gd" id="2_fj7yv"]
+[ext_resource type="Texture2D" uid="uid://hs4bvxmeoums" path="res://assets/sketch.webp" id="2_pkg7o"]
 [ext_resource type="PackedScene" uid="uid://duqlr3ra2icql" path="res://explosive_cask.tscn" id="3_dwbse"]
 [ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://enemy.tscn" id="3_tlwt5"]
-[ext_resource type="Script" uid="uid://cpmpq25kjfyw0" path="res://enemy_spawner.gd" id="4_aqk2v"]
+[ext_resource type="Script" path="res://enemy_spawner.gd" id="4_aqk2v"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_gbfbk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ioo17"]
+shading_mode = 0
+albedo_texture = ExtResource("2_pkg7o")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_fj7yv"]
 
-[sub_resource type="Gradient" id="Gradient_fj7yv"]
-colors = PackedColorArray(0.6147603, 0.3720098, 0.99999005, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_tlwt5"]
-gradient = SubResource("Gradient_fj7yv")
-fill_to = Vector2(1, 0.959596)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fj7yv"]
-albedo_color = Color(0.87058824, 0.96862745, 1, 1)
-albedo_texture = SubResource("GradientTexture2D_tlwt5")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pkg7o"]
+transparency = 1
+albedo_color = Color(0.78775924, 0.78775924, 0.78775924, 1)
+metallic_specular = 0.0
+shadow_to_opacity = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tlwt5"]
 size = Vector3(20, 1, 20)
@@ -50,19 +52,38 @@ sky = SubResource("Sky_tlwt5")
 
 [node name="World" type="Node3D" unique_id=74445810]
 
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1346949853]
+transform = Transform3D(0.70710677, -0.49999997, 0.49999997, 0, 0.70710677, 0.70710677, -0.70710677, -0.49999997, 0.49999997, 10, 10, 10)
+projection = 1
+fov = 56.5
+size = 23.365
+near = 0.296
+far = 127.2
+script = ExtResource("2_fj7yv")
+target_path = NodePath("../background")
+
+[node name="background" type="Node3D" parent="." unique_id=1350863833]
+transform = Transform3D(0.7071067, 0, 0.70710677, 0, 1, 0, -0.7071067, 0, 0.70710677, -50, -50, -50)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="background" unique_id=1945786634]
+transform = Transform3D(50, 0, 0, 0, 19.8895, 1.8441344, 0, -19.8895, 1.8441344, 0, -21.255, 0)
+mesh = SubResource("QuadMesh_gbfbk")
+surface_material_override/0 = SubResource("StandardMaterial3D_ioo17")
+
 [node name="Ground" type="StaticBody3D" parent="." unique_id=387867698]
 collision_mask = 0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=350166391]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
 mesh = SubResource("PlaneMesh_fj7yv")
-surface_material_override/0 = SubResource("StandardMaterial3D_fj7yv")
+surface_material_override/0 = SubResource("StandardMaterial3D_pkg7o")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=351668632]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_tlwt5")
 
 [node name="Goose" type="CharacterBody3D" parent="." unique_id=1676621756 groups=["player"]]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.55401707, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.554, 0)
 collision_layer = 2
 script = ExtResource("1_f3sb7")
 attack_line_scene = ExtResource("2_036b0")
@@ -90,14 +111,11 @@ transform = Transform3D(0.3, 0, 0, 0, 0.2, 0, 0, 0, 0.4, 0, 0.5, -0.6)
 mesh = SubResource("BoxMesh_tlwt5")
 surface_material_override/0 = SubResource("StandardMaterial3D_aqk2v")
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1346949853]
-transform = Transform3D(0.70710677, -0.4055798, 0.579228, 0, 0.81915206, 0.57357645, -0.70710677, -0.4055798, 0.579228, 10, 10, 10)
-projection = 1
-size = 10.0
-script = ExtResource("2_fj7yv")
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1109783111]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.194148, 0)
+transform = Transform3D(0.539483, 0.1306471, 0.8317989, -0.81290555, -0.17661655, 0.55496955, 0.21941456, -0.97557044, 0.010922074, 0, 6.194148, 0)
+shadow_enabled = true
+shadow_bias = 0.02
+sky_mode = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=826461761]
 environment = SubResource("Environment_fj7yv")
