@@ -1,12 +1,13 @@
 [gd_scene format=3 uid="uid://crmist5ct07gu"]
 
-[ext_resource type="Script" path="res://goose.gd" id="1_f3sb7"]
+[ext_resource type="Script" uid="uid://bfmcigtn3wt52" path="res://goose.gd" id="1_f3sb7"]
 [ext_resource type="PackedScene" uid="uid://bxp3mer64vbso" path="res://debug_attackline.tscn" id="2_036b0"]
-[ext_resource type="Script" path="res://camera_3d.gd" id="2_fj7yv"]
+[ext_resource type="Script" uid="uid://bsyfdo60t10pr" path="res://camera_3d.gd" id="2_fj7yv"]
 [ext_resource type="Texture2D" uid="uid://hs4bvxmeoums" path="res://assets/sketch.webp" id="2_pkg7o"]
 [ext_resource type="PackedScene" uid="uid://duqlr3ra2icql" path="res://explosive_cask.tscn" id="3_dwbse"]
 [ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://enemy.tscn" id="3_tlwt5"]
-[ext_resource type="Script" path="res://enemy_spawner.gd" id="4_aqk2v"]
+[ext_resource type="Script" uid="uid://cpmpq25kjfyw0" path="res://enemy_spawner.gd" id="4_aqk2v"]
+[ext_resource type="ArrayMesh" uid="uid://cw4e670pw5crf" path="res://assets/goose1.obj" id="6_gbfbk"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_gbfbk"]
 
@@ -25,7 +26,17 @@ shadow_to_opacity = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_tlwt5"]
 size = Vector3(20, 1, 20)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_aqk2v"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_ic0uy"]
+size = Vector3(1, 5, 20)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gbfbk"]
+size = Vector3(20, 5, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ioo17"]
+size = Vector3(20, 5, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wse8f"]
+size = Vector3(1, 5, 20)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dwbse"]
 uv1_scale = Vector3(40, 40, 1)
@@ -53,14 +64,13 @@ sky = SubResource("Sky_tlwt5")
 [node name="World" type="Node3D" unique_id=74445810]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1346949853]
-transform = Transform3D(0.70710677, -0.49999997, 0.49999997, 0, 0.70710677, 0.70710677, -0.70710677, -0.49999997, 0.49999997, 10, 10, 10)
+transform = Transform3D(0.69778574, -0.5061031, 0.50690687, 0, 0.7076675, 0.7065455, -0.71630645, -0.49301738, 0.49380034, 10, 13, 10)
 projection = 1
 fov = 56.5
-size = 23.365
+size = 14.0
 near = 0.296
-far = 127.2
+far = 165.35
 script = ExtResource("2_fj7yv")
-target_path = NodePath("../background")
 
 [node name="background" type="Node3D" parent="." unique_id=1350863833]
 transform = Transform3D(0.7071067, 0, 0.70710677, 0, 1, 0, -0.7071067, 0, 0.70710677, -50, -50, -50)
@@ -82,6 +92,36 @@ surface_material_override/0 = SubResource("StandardMaterial3D_pkg7o")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_tlwt5")
 
+[node name="ArenaContainer" type="Node3D" parent="Ground" unique_id=1047169773]
+
+[node name="ArenaWall_NW" type="StaticBody3D" parent="Ground/ArenaContainer" unique_id=419707193]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_NW" unique_id=1381141297]
+shape = SubResource("BoxShape3D_ic0uy")
+debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
+
+[node name="ArenaWall_NE" type="StaticBody3D" parent="Ground/ArenaContainer" unique_id=1104342877]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_NE" unique_id=122501096]
+shape = SubResource("BoxShape3D_gbfbk")
+debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
+
+[node name="ArenaWall_SW" type="StaticBody3D" parent="Ground/ArenaContainer" unique_id=2136304253]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_SW" unique_id=283592288]
+shape = SubResource("BoxShape3D_ioo17")
+debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
+
+[node name="ArenaWall_SE" type="StaticBody3D" parent="Ground/ArenaContainer" unique_id=1820963130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_SE" unique_id=683935770]
+shape = SubResource("BoxShape3D_wse8f")
+debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
+
 [node name="Goose" type="CharacterBody3D" parent="." unique_id=1676621756 groups=["player"]]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.554, 0)
 collision_layer = 2
@@ -90,8 +130,8 @@ attack_line_scene = ExtResource("2_036b0")
 explosion_scene = ExtResource("3_dwbse")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Goose" unique_id=1489755261]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.084928274, 0)
-mesh = SubResource("CapsuleMesh_aqk2v")
+transform = Transform3D(0.34, 0, 0, 0, 0.34, 0, 0, 0, 0.34, 0, -0.084928274, 0)
+mesh = ExtResource("6_gbfbk")
 surface_material_override/0 = SubResource("StandardMaterial3D_dwbse")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Goose" unique_id=1006528382]
@@ -107,7 +147,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.0129756)
 shape = SubResource("BoxShape3D_fj7yv")
 
 [node name="Beak" type="MeshInstance3D" parent="Goose" unique_id=2049706699]
-transform = Transform3D(0.3, 0, 0, 0, 0.2, 0, 0, 0, 0.4, 0, 0.5, -0.6)
+transform = Transform3D(0.3, 0, 0, 0, 0.2, 0, 0, 0, 0.4, 0, 1.8505962, -0.9355713)
 mesh = SubResource("BoxMesh_tlwt5")
 surface_material_override/0 = SubResource("StandardMaterial3D_aqk2v")
 

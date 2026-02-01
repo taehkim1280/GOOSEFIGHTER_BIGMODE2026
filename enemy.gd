@@ -10,24 +10,27 @@ func _ready():
 
 func _physics_process(delta):
 	var final_velocity = Vector3.ZERO
+	var is_being_knocked_back = knockback_velocity.length() > 1.5
 	
-	if player:
-		# calculate chase direction
+	if player and not is_being_knocked_back:
 		var dir = (player.global_position - global_position).normalized()
-		dir.y = 0 # keep it on the floor plane
-		
-		# only look at player if we aren't being launched away
-		if knockback_velocity.length() < 2.0:
-			look_at(global_position + dir, Vector3.UP)
-		
+		dir.y = 0
+		#if knockback_velocity.length() < 2.0:
+			#look_at(global_position + dir, Vector3.UP)
+		look_at(global_position + dir, Vector3.UP)
 		final_velocity = (dir * SPEED) + knockback_velocity
 
-	velocity = final_velocity
+	velocity = final_velocity + knockback_velocity
 
-	# increase the decay speed if they slide too far
-	knockback_velocity = knockback_velocity.move_toward(Vector3.ZERO, 30.0 * delta)
-
-	move_and_slide()
+	if move_and_slide():
+		for i in get_slide_collision_count():
+			var collision = get_slide_collision(i)
+			# Only bounce if the knockback is active
+			if is_being_knocked_back:
+				# Use the normal to reflect the vector
+				knockback_velocity = knockback_velocity.bounce(collision.get_normal()) * 0.8
+	# delta is le friction 
+	knockback_velocity = knockback_velocity.move_toward(Vector3.ZERO, 15.0 * delta)
 
 func apply_knockback(force: Vector3):
 	# overwrite current knockback with the new blast force

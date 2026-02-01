@@ -3,9 +3,10 @@ extends Node3D
 # enemy *.tscn goes here...
 @export var enemy_scene: PackedScene 
 const MAX_ENEMIES = 7
+const ARENA_HALFSIZE = 10.0
 
 func _on_timer_timeout() -> void:
-	var enemy_count = get_child_count() - 1
+	var enemy_count = get_tree().get_nodes_in_group("enemies").size()
 	
 	if enemy_count < MAX_ENEMIES:
 		spawn_enemy()
@@ -13,8 +14,14 @@ func _on_timer_timeout() -> void:
 func spawn_enemy():
 	var new_enemy = enemy_scene.instantiate()
 	
-	var spawn_x = randf_range(-15.0, 15.0)
-	var spawn_z = randf_range(-15.0, 15.0)
+	var local_pos = Vector3(
+		randf_range(-ARENA_HALFSIZE, ARENA_HALFSIZE),
+		0.0,
+		randf_range(-ARENA_HALFSIZE, ARENA_HALFSIZE)
+	)
 	
-	new_enemy.position = Vector3(spawn_x, 1.0, spawn_z)
-	add_child(new_enemy)
+	get_parent().add_child(new_enemy)
+	
+	new_enemy.global_position = self.to_global(local_pos)
+	
+	new_enemy.global_position.y = 1.0

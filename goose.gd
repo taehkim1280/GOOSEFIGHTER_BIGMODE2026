@@ -2,27 +2,29 @@ extends CharacterBody3D
 
 const SPEED = 7
 var ATTACK_RANGE = 3
+
+var current_indicator: Node3D = null
+
 @export var attack_line_scene: PackedScene
 @export var explosion_scene: PackedScene
 @onready var camera = get_viewport().get_camera_3d()
 
+func _process(_delta):
+	if is_instance_valid(current_indicator):
+		var pos = get_mouse_3d_position()
+		if pos != Vector3.ZERO:
+			current_indicator.global_position = pos
+
 func _physics_process(_delta: float) -> void:
-	# get input vector
 	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	
-	# get dir in 3d space (x,y plane)
 	var raw_dir := Vector3(input_dir.x, 0, input_dir.y)
 	var direction := raw_dir.rotated(Vector3.UP, deg_to_rad(45)).normalized()
 
 	if direction:
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
-		
-		# rotate goose to face direction of movement
-		# look at -> curr position + direction
 		look_at(position + direction, Vector3.UP)
 	else:
-		# smooth deceleration
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
@@ -33,7 +35,8 @@ func _input(event):
 		attack_towards_mouse()
 	
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		spawn_explosion()
+		if current_indicator == null:
+			spawn_explosion_sequence()
 
 func attack_towards_mouse():
 	var target_pos = get_mouse_3d_position()
@@ -78,13 +81,14 @@ func get_mouse_3d_position() -> Vector3:
 	
 	return intersection if intersection else Vector3.ZERO
 
-func spawn_explosion():
-	var pos = get_mouse_3d_position()
-	if pos == Vector3.ZERO: return
+func spawn_explosion_sequence():
+	current_indicator = explosion_scene.instantiate()
+	get_parent().add_child(current_indicator)
+	current_indicator.set_as_faint(true)
 	
-	var circle = explosion_scene.instantiate()
-	get_parent().add_child(circle)
+	await get_tree().create_timer(0.3).timeout
 	
-	circle.global_position = pos
-	
-	circle.explode()
+	if is_instance_valid(current_indicator):
+		var locked_pos = current_indicator.global_position
+		current_indicator.start_charge_sequence(locked_pos)
+		current_indicator = null
