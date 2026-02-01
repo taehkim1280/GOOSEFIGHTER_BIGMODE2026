@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://duqlr3ra2icql"]
 
 [ext_resource type="Script" uid="uid://ditniiv2afohk" path="res://explosive_cask.gd" id="1_q0qkm"]
+[ext_resource type="PackedScene" uid="uid://1u8a0wepqy3b" path="res://projectile.tscn" id="2_1g5he"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_1g5he"]
 top_radius = 1.0
@@ -13,6 +14,7 @@ albedo_color = Color(0.5568628, 1, 1, 0.42745098)
 
 [node name="ExplosiveCask" type="Node3D" unique_id=460658420]
 script = ExtResource("1_q0qkm")
+projectile_scene = ExtResource("2_1g5he")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2043452029]
 transform = Transform3D(1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 0, 0)

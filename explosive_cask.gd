@@ -3,6 +3,8 @@ extends Node3D
 const RADIUS = 5.0
 const KNOCKBACK_STRENGTH = 25.0
 
+@export var projectile_scene: PackedScene
+
 @onready var mesh = $MeshInstance3D
 
 func set_as_faint(is_faint: bool):
@@ -12,8 +14,22 @@ func set_as_faint(is_faint: bool):
 
 func start_charge_sequence(pos: Vector3):
 	global_position = pos
-	mesh.transparency = 0.4
 	
+	# spawning the visual projectile
+	var player = get_tree().get_first_node_in_group("player")
+	if player and projectile_scene:
+		var proj = projectile_scene.instantiate()
+		get_parent().add_child(proj)
+		# launch from player to this cask's locked position
+		proj.launch(player.global_position, global_position, 0.5)
+		
+		# hide the cask mesh while the projectile is in the air
+		mesh.transparency = 1.0 
+	else:
+		# fallback if no projectile or player: just show the faint indicator
+		mesh.transparency = 0.4
+
+	# timing the explosion
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector3(1.1, 1, 1.1), 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_callback(explode)

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://1u8a0wepqy3b"]
+
+[ext_resource type="Script" uid="uid://hoi2vdgasqi4" path="res://projectile.gd" id="1_a85iw"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_qxf0c"]
+
+[node name="projectile" type="Node3D" unique_id=1702889274]
+script = ExtResource("1_a85iw")
+
+[node name="bomba_projectile" type="MeshInstance3D" parent="." unique_id=1956260051]
+mesh = SubResource("SphereMesh_qxf0c")
