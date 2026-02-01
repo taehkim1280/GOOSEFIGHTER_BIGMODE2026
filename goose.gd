@@ -1,7 +1,13 @@
 extends CharacterBody3D
 
 const SPEED = 7
-var ATTACK_RANGE = 3
+var ATTACK_RANGE = 2.0
+
+var attack_cooldown: float = 0.0
+const ATTACK_COOLDOWN_TIME: float = 0.4
+
+@onready var bomba_timer = $BombaTimer
+const BOMBA_COOLDOWN: float = 2.0
 
 var current_indicator: Node3D = null
 
@@ -20,6 +26,9 @@ func _physics_process(_delta: float) -> void:
 	var raw_dir := Vector3(input_dir.x, 0, input_dir.y)
 	var direction := raw_dir.rotated(Vector3.UP, deg_to_rad(45)).normalized()
 
+	if attack_cooldown > 0:
+		attack_cooldown -= _delta
+
 	if direction:
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
@@ -31,15 +40,20 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 	
 func _input(event):
-	if event.is_action_pressed("ui_accept"): # spacebar
+	if event.is_action_pressed("attack_primary"): # spacebar
 		attack_towards_mouse()
 	
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+	if event.is_action_pressed("attack_explosive_cask"):
 		if current_indicator == null:
 			spawn_explosion_sequence()
 
 func attack_towards_mouse():
+	if attack_cooldown > 0: return
+
 	var target_pos = get_mouse_3d_position()
+	var attack_damage = 7
+	var is_lethal = true
+
 	if target_pos == Vector3.ZERO: return
 	
 	# calculate vector from goose to mouse
@@ -49,7 +63,7 @@ func attack_towards_mouse():
 	# [DEBUG]
 	print("Attacking towards: ", target_pos)
 	var line = attack_line_scene.instantiate()
-	get_parent().add_child(line) # Add to World, not Goose
+	get_parent().add_child(line) # add to world, not Goose
 
 	line.global_position = global_position + Vector3(0, 0.5, 0)
 	
@@ -68,7 +82,9 @@ func attack_towards_mouse():
 			var to_enemy_2d = Vector2(enemy_diff.x, enemy_diff.z).normalized()
 			
 			if attack_dir_2d.dot(to_enemy_2d) > 0.7:
-				enemy.die()
+				enemy.take_damage(attack_damage, global_position, is_lethal)
+
+	attack_cooldown = ATTACK_COOLDOWN_TIME
 
 func get_mouse_3d_position() -> Vector3:
 	var mouse_pos = get_viewport().get_mouse_position()
@@ -82,6 +98,11 @@ func get_mouse_3d_position() -> Vector3:
 	return intersection if intersection else Vector3.ZERO
 
 func spawn_explosion_sequence():
+	if not bomba_timer.is_stopped(): 
+		return
+
+	bomba_timer.start(BOMBA_COOLDOWN)
+
 	current_indicator = explosion_scene.instantiate()
 	get_parent().add_child(current_indicator)
 	current_indicator.set_as_faint(true)

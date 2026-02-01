@@ -22,15 +22,21 @@ func explode():
 	var enemies = get_tree().get_nodes_in_group("enemies")
 	
 	for enemy in enemies:
-		if enemy is CharacterBody3D:
+		if enemy.has_method("take_damage"):
 			var diff = enemy.global_position - self.global_position
 			diff.y = 0 # ignore height
 			var dist = diff.length()
 			
 			if dist <= RADIUS:
-				var push_dir = diff.normalized()
-				if push_dir == Vector3.ZERO: push_dir = Vector3.FORWARD
-				enemy.apply_knockback(push_dir * KNOCKBACK_STRENGTH)
+				# var push_dir = diff.normalized()
+				# if push_dir == Vector3.ZERO: push_dir = Vector3.FORWARD
+				# enemy.apply_knockback(push_dir * KNOCKBACK_STRENGTH)
+				var damage_amount = 25.0
+				enemy.take_damage(damage_amount, self.global_position)
+
+	var cam = get_viewport().get_camera_3d()
+	if cam.has_method("add_shake"):
+		cam.add_shake(0.4) # Intensity of 0.4
 	
 	var burst = create_tween()
 	mesh.transparency = 0.0 # Flash solid

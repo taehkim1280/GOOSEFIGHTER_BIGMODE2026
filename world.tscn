@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://enemy.tscn" id="3_tlwt5"]
 [ext_resource type="Script" uid="uid://cpmpq25kjfyw0" path="res://enemy_spawner.gd" id="4_aqk2v"]
 [ext_resource type="ArrayMesh" uid="uid://cw4e670pw5crf" path="res://assets/goose1.obj" id="6_gbfbk"]
+[ext_resource type="Script" uid="uid://ctai7npvyvnuw" path="res://texture_progress_bar.gd" id="9_ioo17"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_gbfbk"]
 
@@ -61,6 +62,21 @@ sky = SubResource("Sky_tlwt5")
 
 [sub_resource type="GDScript" id="GDScript_036b0"]
 
+[sub_resource type="Gradient" id="Gradient_wse8f"]
+colors = PackedColorArray(0.6824472, 0.50274867, 0.45406693, 1, 0.4749992, 0.64651793, 0.20127043, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ic0uy"]
+gradient = SubResource("Gradient_wse8f")
+fill_to = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_k3n1d"]
+offsets = PackedFloat32Array(0.012987013, 0.9805195)
+colors = PackedColorArray(0.998056, 0.7522926, 0.66642404, 1, 0, 0.9019608, 0.53333336, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2o6r5"]
+gradient = SubResource("Gradient_k3n1d")
+fill_to = Vector2(1, 1)
+
 [node name="World" type="Node3D" unique_id=74445810]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1346949853]
@@ -99,11 +115,13 @@ transform = Transform3D(1.5, 0, 0, 0, 10, 0, 0, 0, 1.5, 4, 0, 4)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_NW" unique_id=1381141297]
+visible = false
 shape = SubResource("BoxShape3D_ic0uy")
 debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 
 [node name="ArenaWall_NE" type="StaticBody3D" parent="Ground/ArenaContainer" unique_id=1104342877]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_NE" unique_id=122501096]
 shape = SubResource("BoxShape3D_gbfbk")
@@ -113,6 +131,7 @@ debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_SW" unique_id=283592288]
+visible = false
 shape = SubResource("BoxShape3D_ioo17")
 debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 
@@ -120,6 +139,7 @@ debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_SE" unique_id=683935770]
+visible = false
 shape = SubResource("BoxShape3D_wse8f")
 debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 
@@ -152,6 +172,9 @@ transform = Transform3D(0.3, 0, 0, 0, 0.2, 0, 0, 0, 0.4, 0, 1.8505962, -0.935571
 mesh = SubResource("BoxMesh_tlwt5")
 surface_material_override/0 = SubResource("StandardMaterial3D_aqk2v")
 
+[node name="BombaTimer" type="Timer" parent="Goose" unique_id=1786101405]
+one_shot = true
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1109783111]
 transform = Transform3D(0.539483, 0.1306471, 0.8317989, -0.81290555, -0.17661655, 0.55496955, 0.21941456, -0.97557044, 0.010922074, 0, 6.194148, 0)
 shadow_enabled = true
@@ -169,5 +192,28 @@ enemy_scene = ExtResource("3_tlwt5")
 wait_time = 3.0
 autostart = true
 script = SubResource("GDScript_036b0")
+
+[node name="UI Canvas" type="CanvasLayer" parent="." unique_id=1506551400]
+
+[node name="Control" type="Control" parent="UI Canvas" unique_id=965256485]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="UI Canvas/Control" unique_id=1122265755]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -64.0
+offset_right = 64.0
+grow_vertical = 0
+rounded = true
+fill_mode = 4
+texture_under = SubResource("GradientTexture2D_ic0uy")
+texture_progress = SubResource("GradientTexture2D_2o6r5")
+script = ExtResource("9_ioo17")
+timer_path = null
 
 [connection signal="timeout" from="Enemy Spawner/Timer" to="Enemy Spawner" method="_on_timer_timeout"]
