@@ -14,6 +14,7 @@ var current_indicator: Node3D = null
 @export var attack_line_scene: PackedScene
 @export var explosion_scene: PackedScene
 @onready var camera = get_viewport().get_camera_3d()
+@onready var anim_player = $AnimationPlayer
 
 func _process(_delta):
 	if is_instance_valid(current_indicator):
@@ -37,8 +38,14 @@ func _physics_process(_delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
-	move_and_slide()
+	# animation logic
+	if direction != Vector3.ZERO:
+		anim_player.play("run")
+	else:
+		anim_player.play("idle")
 	
+	move_and_slide()
+
 func _input(event):
 	if event.is_action_pressed("attack_primary"): # spacebar
 		attack_towards_mouse()
