@@ -64,7 +64,7 @@ sky = SubResource("Sky_tlwt5")
 [node name="World" type="Node3D" unique_id=74445810]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1346949853]
-transform = Transform3D(0.69778574, -0.5061031, 0.50690687, 0, 0.7076675, 0.7065455, -0.71630645, -0.49301738, 0.49380034, 10, 13, 10)
+transform = Transform3D(0.7071067, -0.40860698, 0.57709634, 0, 0.8161375, 0.57785755, -0.7071067, -0.40860698, 0.57709634, 10, 13, 10)
 projection = 1
 fov = 56.5
 size = 14.0
@@ -76,7 +76,7 @@ script = ExtResource("2_fj7yv")
 transform = Transform3D(0.7071067, 0, 0.70710677, 0, 1, 0, -0.7071067, 0, 0.70710677, -50, -50, -50)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="background" unique_id=1945786634]
-transform = Transform3D(50, 0, 0, 0, 19.8895, 1.8441344, 0, -19.8895, 1.8441344, 0, -21.255, 0)
+transform = Transform3D(50, 0, 0, 0, 19.8895, 1.8441344, 0, -19.8895, 1.8441344, 0, 0, 0)
 mesh = SubResource("QuadMesh_gbfbk")
 surface_material_override/0 = SubResource("StandardMaterial3D_ioo17")
 
@@ -84,7 +84,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ioo17")
 collision_mask = 0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=350166391]
-transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
+transform = Transform3D(14, 0, 0, 0, 1, 0, 0, 0, 14, 4, 0, 4)
 mesh = SubResource("PlaneMesh_fj7yv")
 surface_material_override/0 = SubResource("StandardMaterial3D_pkg7o")
 
@@ -93,6 +93,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_tlwt5")
 
 [node name="ArenaContainer" type="Node3D" parent="Ground" unique_id=1047169773]
+transform = Transform3D(1.5, 0, 0, 0, 10, 0, 0, 0, 1.5, 4, 0, 4)
 
 [node name="ArenaWall_NW" type="StaticBody3D" parent="Ground/ArenaContainer" unique_id=419707193]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 0)
