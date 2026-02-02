@@ -14,6 +14,7 @@ const DASH_COOLDOWN = 1.5
 @export var explosion_scene: PackedScene
 
 # --- Variables ---
+var current_health = 100
 var ATTACK_RANGE = 2.0
 var attack_cooldown: float = 0.0
 var current_indicator: Node3D = null
@@ -33,6 +34,7 @@ var pinned_enemies: Array[Node3D] = []
 
 func _ready():
 	dash_hitbox.body_entered.connect(_on_dash_hitbox_body_entered)
+	current_health = GameManager.current_health
 
 func _process(_delta):
 	if is_instance_valid(current_indicator):
@@ -203,24 +205,27 @@ func spawn_explosion_sequence():
 		current_indicator = null
 
 func take_damage(amount: int) -> void:
-	# 1. Gatekeeper: If we are invincible, ignore the hit
-	# if is_invincible:
-	# 	return
-
-	# 2. Logic: Apply damage
-	# current_health -= amount
+	current_health -= amount
 	print("Player hit for %s" % amount)
 
 	# 3. Visualization: Update UI / Flash Red
 	# emit_signal("health_changed", current_health)
 
-	# 4. State Management: Check Death or Start I-Frames
-	# if current_health <= 0:
-	# 	_die()
-	# else:
-	# 	is_invincible = true
-	# 	iframe_timer.start()
+	if current_health <= 0:
+		_die()
 
+func _die():
+	level_complete()
+
+
+### TODO: Needs to be put in a WorldController.gd
+func level_complete():
+	# # Save current state to singleton
+	# GameManager.current_health = current_health
+	# GameManager.gold += 100 # Reward for winning
+
+	# Go to Shop
+	get_tree().change_scene_to_file("res://Shop.tscn")
 
 # --- Utilities ---
 

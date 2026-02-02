@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://d4eo4uytpnwst"]
+
+[ext_resource type="Script" uid="uid://daonprotxr3xd" path="res://shop.gd" id="1_viryw"]
+
+[node name="Shop" type="Control" unique_id=1215132281]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_viryw")
+
+[node name="Button2" type="Button" parent="." unique_id=2106477184]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Button" type="Button" parent="." unique_id=1382234119]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="GoldLabel" type="Label" parent="." unique_id=1890007563]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1922896419]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
