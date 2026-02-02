@@ -3,18 +3,53 @@ extends CharacterBody3D
 const SPEED = 3.0
 var player: Node3D = null
 var knockback_velocity = Vector3.ZERO
+var is_being_knocked_back = false
+var necklen = 1
+var neckoffset = 0.3
 
 var health_percent: float = 0.0
+
 @onready var label = $Label3D
+@onready var anim_player = $AnimationPlayer
+@onready var skeleton = $Armature/Skeleton3D
+
+
+@onready var attackCD = $AttackCD
+var is_attacking = false
+@onready var attackDone = $AttackDone # if attackDone.is_stopped(), entity is not attacking
+
+####### PECK ATTACK #########
+var peckattackRangeOuter = 2.75
+var peckattackRangeInner = 1.25
+var peckattackRadius = 0.75
+var peckattackCD = 1
+@onready var peckCollider = $PeckCollider
+
 
 func _ready():
 	add_to_group("enemies")
 	player = get_tree().get_first_node_in_group("player")
 	update_label()
 
+	#### peck logic ####
+	necklen = randf_range(1, 2.5)
+	skeleton.set_bone_pose_scale(skeleton.find_bone("neck"), Vector3(1, (necklen), 1))
+	peckCollider.translate(Vector3(0, 0, -1*necklen*2 + neckoffset))
+	peckattackRangeOuter = necklen*2 + neckoffset + peckattackRadius
+	peckattackRangeInner = necklen*2 + neckoffset - peckattackRadius
+
+
+	#### clap logic ######
+
+
+	##### debug lines ######
+	if OS.is_debug_build():
+		_spawn_debug_lines()
+
 func _physics_process(delta):
+	is_attacking = not attackDone.is_stopped()
 	var final_velocity = Vector3.ZERO
-	var is_being_knocked_back = knockback_velocity.length() > 1.5
+	is_being_knocked_back = knockback_velocity.length() > 1.5
 
 	if player and not is_being_knocked_back:
 		var dir = (player.global_position - global_position).normalized()
@@ -43,11 +78,45 @@ func _physics_process(delta):
 
 	# decay the knockback over time so they dont slide forever
 	knockback_velocity = knockback_velocity.move_toward(Vector3.ZERO, 20.0 * delta)
+
+	if not is_attacking && (player.global_position - global_position).length() < peckattackRangeOuter:
+		try_attack()
+
+	# animation logic
+	if not is_attacking:
+		anim_player.play("run", -1, (velocity.length())/SPEED)
+
 	update_label()
 
 func update_label():
 	label.text = str(round(health_percent)) + "%"
 	label.modulate = Color(1, 1 - (health_percent/200.0), 1 - (health_percent/200.0))
+
+
+func try_attack():
+	if not attackCD.is_stopped():
+		return
+	if player and not is_being_knocked_back:
+		var dir = (player.global_position - global_position).normalized()
+		dir.y = 0
+		look_at(global_position + dir, Vector3.UP)
+	else:
+		return
+
+	## use distance to choose attack type
+	var distToPlayer = (player.global_position - global_position).length()
+	if distToPlayer > peckattackRangeInner:
+		## Use peck attack
+
+		anim_player.play("attackBase", -1, 1.5)
+	else:
+		## use clap attack
+
+		anim_player.play("attackclap", -1, 3)
+	attackCD.start()
+	attackDone.start()
+	is_attacking = not attackDone.is_stopped()
+
 
 # func take_damage(amount: float, source_pos: Vector3):
 # 	health_percent += amount
@@ -83,3 +152,29 @@ func apply_knockback(force: Vector3):
 	
 func die():
 	queue_free()
+
+func _spawn_debug_lines() -> void:
+	if OS.is_debug_build():
+		# 1. Create a MeshInstance to hold the shape
+		var debug_ring = MeshInstance3D.new()
+
+		# 2. Create a Torus (Donut shape)
+		var torus = TorusMesh.new()
+		torus.outer_radius = peckattackRangeOuter
+		torus.inner_radius = peckattackRangeInner
+
+		# 3. Create an Unshaded Material (Bright Red, visible in dark)
+		var mat = StandardMaterial3D.new()
+		mat.albedo_color = Color(1, 0, 0) # Red
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.albedo_color.a = 0.5 # 50% transparent
+
+		# 4. Assign and attach
+		torus.material = mat
+		debug_ring.mesh = torus
+		debug_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		debug_ring.scale = Vector3(1.0, 0.1, 1.0)
+		debug_ring.position.y = -1
+		# Add as child so it moves with the enemy
+		add_child(debug_ring)
