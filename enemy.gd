@@ -21,16 +21,17 @@ var is_attacking = false
 var attackType = 0 #0 for peck, 1 for clap
 
 ####### PECK ATTACK #########
-var peckattackWindup = 0.75
+var peckattackWindup = 0.8
 var peckattackRangeOuter = 2.75
 var peckattackRangeInner = 3  # also the range for the clap
 var peckattackRadius = 1
-var peckattackCD = 1
 @onready var peckArea = $PeckArea
+@onready var peck_col_shape: CollisionShape3D = $PeckArea/PeckCollider
 
 ####### CLAP ATTACK #########
-var clapattackWindup = 0.2
+var clapattackWindup = 0.8
 @onready var clapArea = $ClapArea
+@onready var clap_col_shape: CollisionShape3D = $ClapArea/ClapCollider
 
 
 func _ready():
@@ -96,6 +97,10 @@ func update_label():
 	label.text = str(round(health_percent)) + "%"
 	label.modulate = Color(1, 1 - (health_percent/200.0), 1 - (health_percent/200.0))
 
+func get_collider_radius(col_node: CollisionShape3D) -> float:
+	var shape = col_node.shape
+	var node_scale = col_node.global_transform.basis.get_scale().x
+	return shape.radius * node_scale
 
 func try_attack():
 	if not attackCD.is_stopped():
@@ -113,13 +118,17 @@ func try_attack():
 		## Use peck attack
 		attackType = 0
 		peckArea.global_position = player.global_position
-		anim_player.play("attackBase", -1, 1.5)
+		anim_player.play("attackBase", -1, 1)
 		attackWindup.start(peckattackWindup)
+
+		spawn_telegraph(peckArea.global_position, get_collider_radius(peck_col_shape), peckattackWindup)
 	else:
 		## use clap attack
 		attackType = 1
-		anim_player.play("attackclap", -1, 3)
+		anim_player.play("attackclap", -1, 2)
 		attackWindup.start(clapattackWindup)
+
+		spawn_telegraph(clapArea.global_position, get_collider_radius(clap_col_shape), clapattackWindup)
 
 	velocity = Vector3.ZERO
 	attackCD.start()
@@ -133,6 +142,50 @@ func _on_attack_cd_timeout():
 	else:
 		if clapArea.overlaps_body(player):
 			player.take_damage(20)
+
+func spawn_telegraph(pos: Vector3, radius: float, duration: float) -> void:
+	# 1. Create the Visual Mesh
+	var indicator = MeshInstance3D.new()
+	var indicator2 = MeshInstance3D.new()
+	var mesh = CylinderMesh.new()
+	mesh.top_radius = radius
+	mesh.bottom_radius = radius
+	mesh.height = 0.05 # Very flat
+	indicator.mesh = mesh
+	indicator2.mesh = mesh
+
+	# 2. Create the Material (Semi-transparent Red)
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = Color(1, 0, 0, 0.3) # Red with 40% opacity
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED # Glows; ignores shadows
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	indicator.material_override = mat
+	indicator2.material_override = mat
+
+	get_tree().root.add_child(indicator)
+	get_tree().root.add_child(indicator2)
+	indicator.global_position = pos
+	indicator2.global_position = pos
+
+	# lift slightly to avoid z-fighting with floor
+	indicator.global_position.y = 0.05 
+	indicator2.global_position.y = 0.05 
+
+	# 4. The Animation (Tween)
+	# Start scale at 0 (center point) and expand to 1 (full radius)
+	indicator.scale = Vector3(0, 1, 0) 
+	indicator2.scale = Vector3(1, 1, 1) 
+
+	var tween = create_tween()
+	# Expand the X and Z axes to full size over 'duration'
+	tween.tween_property(indicator, "scale", Vector3(1, 1, 1), duration).set_trans(Tween.TRANS_LINEAR)
+	# Cleanup: Delete the node automatically when the windup finishes
+	tween.tween_callback(func():
+		indicator.queue_free()
+		indicator2.queue_free()
+	)
+
 
 # func take_damage(amount: float, source_pos: Vector3):
 # 	health_percent += amount
@@ -170,7 +223,7 @@ func die():
 	queue_free()
 
 func _spawn_debug_lines() -> void:
-	if OS.is_debug_build():
+	if OS.is_debug_build() && false:
 		# 1. Create a MeshInstance to hold the shape
 		var debug_ring = MeshInstance3D.new()
 

@@ -1255,7 +1255,7 @@ _data = {
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_7k104"]
 height = 3.515
-radius = 1.005
+radius = 0.6
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_4gyqm"]
 height = 3.515
@@ -1537,10 +1537,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -1.82)
 shape = SubResource("CylinderShape3D_4gyqm")
 
 [node name="AttackCD" type="Timer" parent="." unique_id=1559625723]
+wait_time = 2.0
 one_shot = true
 
 [node name="AttackDone" type="Timer" parent="." unique_id=534200680]
-wait_time = 0.5
+wait_time = 1.5
 one_shot = true
 
 [node name="AttackWindup" type="Timer" parent="." unique_id=681362258]

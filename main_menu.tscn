@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://cdcx5120k0bsq"]
+
+[ext_resource type="Script" uid="uid://cwovpi8n811pt" path="res://main_menu.gd" id="1_06t4h"]
+
+[node name="MainMenu" type="Control" unique_id=251939679]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_06t4h")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2104033249]
+layout_mode = 0
+offset_left = 445.0
+offset_top = 121.0
+offset_right = 675.0
+offset_bottom = 527.0
+
+[node name="StartButton" type="Button" parent="VBoxContainer" unique_id=205452342]
+layout_mode = 2
+text = "Start Game"
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1234393710]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+
+[connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
