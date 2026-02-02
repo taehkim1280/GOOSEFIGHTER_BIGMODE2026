@@ -202,6 +202,26 @@ func spawn_explosion_sequence():
 		current_indicator.start_charge_sequence(locked_pos)
 		current_indicator = null
 
+func take_damage(amount: int) -> void:
+	# 1. Gatekeeper: If we are invincible, ignore the hit
+	# if is_invincible:
+	# 	return
+
+	# 2. Logic: Apply damage
+	# current_health -= amount
+	print("Player hit for %s" % amount)
+
+	# 3. Visualization: Update UI / Flash Red
+	# emit_signal("health_changed", current_health)
+
+	# 4. State Management: Check Death or Start I-Frames
+	# if current_health <= 0:
+	# 	_die()
+	# else:
+	# 	is_invincible = true
+	# 	iframe_timer.start()
+
+
 # --- Utilities ---
 
 func get_mouse_3d_position() -> Vector3:

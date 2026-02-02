@@ -17,26 +17,32 @@ var health_percent: float = 0.0
 @onready var attackCD = $AttackCD
 var is_attacking = false
 @onready var attackDone = $AttackDone # if attackDone.is_stopped(), entity is not attacking
+@onready var attackWindup = $AttackWindup
+var attackType = 0 #0 for peck, 1 for clap
 
 ####### PECK ATTACK #########
+var peckattackWindup = 0.2
 var peckattackRangeOuter = 2.75
-var peckattackRangeInner = 1.25
-var peckattackRadius = 0.75
+var peckattackRangeInner = 3  # also the range for the clap
+var peckattackRadius = 1
 var peckattackCD = 1
-@onready var peckCollider = $PeckCollider
+@onready var peckArea = $PeckArea
+
+####### CLAP ATTACK #########
+var clapattackWindup = 0.2
+@onready var clapArea = $ClapArea
 
 
 func _ready():
 	add_to_group("enemies")
 	player = get_tree().get_first_node_in_group("player")
 	update_label()
+	attackWindup.timeout.connect(_on_attack_cd_timeout)
 
 	#### peck logic ####
 	necklen = randf_range(1, 2.5)
 	skeleton.set_bone_pose_scale(skeleton.find_bone("neck"), Vector3(1, (necklen), 1))
-	peckCollider.translate(Vector3(0, 0, -1*necklen*2 + neckoffset))
 	peckattackRangeOuter = necklen*2 + neckoffset + peckattackRadius
-	peckattackRangeInner = necklen*2 + neckoffset - peckattackRadius
 
 
 	#### clap logic ######
@@ -107,16 +113,28 @@ func try_attack():
 	var distToPlayer = (player.global_position - global_position).length()
 	if distToPlayer > peckattackRangeInner:
 		## Use peck attack
-
+		attackType = 0
+		peckArea.global_position = player.global_position
 		anim_player.play("attackBase", -1, 1.5)
+		attackWindup.start(peckattackWindup)
 	else:
 		## use clap attack
-
+		attackType = 1
 		anim_player.play("attackclap", -1, 3)
+		attackWindup.start(clapattackWindup)
+
+	velocity = Vector3.ZERO
 	attackCD.start()
 	attackDone.start()
 	is_attacking = not attackDone.is_stopped()
 
+func _on_attack_cd_timeout():
+	if attackType == 0:
+		if peckArea.overlaps_body(player):
+			player.take_damage(10)
+	else:
+		if clapArea.overlaps_body(player):
+			player.take_damage(20)
 
 # func take_damage(amount: float, source_pos: Vector3):
 # 	health_percent += amount
