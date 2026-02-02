@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bfmcigtn3wt52" path="res://goose.gd" id="1_f3sb7"]
 [ext_resource type="PackedScene" uid="uid://bxp3mer64vbso" path="res://debug_attackline.tscn" id="2_036b0"]
 [ext_resource type="Script" uid="uid://bsyfdo60t10pr" path="res://camera_3d.gd" id="2_fj7yv"]
-[ext_resource type="Texture2D" uid="uid://hs4bvxmeoums" path="res://assets/sketch.webp" id="2_pkg7o"]
+[ext_resource type="Texture2D" uid="uid://xuup2ey3xe6" path="res://assets/arena_ortho.jpg" id="2_wse8f"]
 [ext_resource type="PackedScene" uid="uid://duqlr3ra2icql" path="res://explosive_cask.tscn" id="3_dwbse"]
 [ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://enemy.tscn" id="3_tlwt5"]
 [ext_resource type="Script" uid="uid://cpmpq25kjfyw0" path="res://enemy_spawner.gd" id="4_aqk2v"]
@@ -15,7 +15,7 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ioo17"]
 shading_mode = 0
-albedo_texture = ExtResource("2_pkg7o")
+albedo_texture = ExtResource("2_wse8f")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_fj7yv"]
 
