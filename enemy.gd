@@ -21,7 +21,7 @@ var is_attacking = false
 var attackType = 0 #0 for peck, 1 for clap
 
 ####### PECK ATTACK #########
-var peckattackWindup = 0.2
+var peckattackWindup = 0.75
 var peckattackRangeOuter = 2.75
 var peckattackRangeInner = 3  # also the range for the clap
 var peckattackRadius = 1
@@ -44,9 +44,7 @@ func _ready():
 	skeleton.set_bone_pose_scale(skeleton.find_bone("neck"), Vector3(1, (necklen), 1))
 	peckattackRangeOuter = necklen*2 + neckoffset + peckattackRadius
 
-
 	#### clap logic ######
-
 
 	##### debug lines ######
 	if OS.is_debug_build():

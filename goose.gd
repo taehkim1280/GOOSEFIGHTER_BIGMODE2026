@@ -2,9 +2,9 @@ extends CharacterBody3D
 
 # --- Constants ---
 const SPEED = 7
-const ATTACK_COOLDOWN_TIME = 0.4
-const BOMBA_COOLDOWN = 2.0
-const DASH_COOLDOWN = 1.5 
+const ATTACK_COOLDOWN_TIME = 0.3
+const BOMBA_COOLDOWN = 4.0
+const DASH_COOLDOWN = 0.5 
 
 # --- Exports ---
 @export var DASH_SPEED: float = 25.0
@@ -18,8 +18,12 @@ var ATTACK_RANGE = 2.0
 var attack_cooldown: float = 0.0
 var current_indicator: Node3D = null
 var is_dashing: bool = false
+var is_attacking: bool = false
 var dash_direction: Vector3 = Vector3.ZERO
 var pinned_enemies: Array[Node3D] = []
+var is_invincible: bool = false
+var ghost_spawn_timer: float = 0.0
+var buffered_input: String = ""
 
 # --- Onready Nodes ---
 @onready var bomba_timer = $BombaTimer
@@ -28,6 +32,7 @@ var pinned_enemies: Array[Node3D] = []
 @onready var dash_cooldown_timer = $DashCooldownTimer
 @onready var camera = get_viewport().get_camera_3d()
 @onready var anim_player = $AnimationPlayer
+@onready var attack_hitbox = $PrimaryAttackHitbox
 
 # --- Lifecycle ---
 
@@ -45,9 +50,20 @@ func _physics_process(_delta: float) -> void:
 	var raw_dir := Vector3(input_dir.x, 0, input_dir.y)
 	var direction := raw_dir.rotated(Vector3.UP, deg_to_rad(45)).normalized()
 
+	#if direction != Vector3.ZERO:
+		## ONLY rotate if we are NOT attacking
+		##if is_attacking: print("is_attacking is true")
+		#if not is_attacking:
+				#look_at(position + direction, Vector3.UP)
+
 	if is_dashing:
 		velocity = dash_direction * DASH_SPEED
 		move_and_slide()
+		
+		ghost_spawn_timer += _delta
+		if ghost_spawn_timer > 0.05: # Spawn a ghost every 0.05 seconds
+			spawn_ghost_trail()
+			ghost_spawn_timer = 0.0
 		
 		for enemy in pinned_enemies:
 			if is_instance_valid(enemy):
@@ -66,13 +82,20 @@ func _physics_process(_delta: float) -> void:
 	if direction:
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
-		look_at(position + direction, Vector3.UP)
+		if not is_attacking:
+				look_at(position + direction, Vector3.UP)
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	# animation logic
-	if direction != Vector3.ZERO:
+	# 1st priority is attack
+	if is_dashing:
+		pass
+	elif is_attacking:
+		pass 
+	# 2nd priority is running
+	elif direction != Vector3.ZERO:
 		anim_player.play("run")
 	else:
 		anim_player.play("idle")
@@ -81,10 +104,15 @@ func _physics_process(_delta: float) -> void:
 
 func _input(event):
 	if event.is_action_pressed("attack_primary"):
-		attack_towards_mouse()
-	
+		if is_dashing:
+			buffered_input = "attack_primary"
+		else:
+			attack_towards_mouse()
+
 	if event.is_action_pressed("attack_explosive_cask"):
-		if current_indicator == null:
+		if is_dashing:
+			buffered_input = "attack_explosive_cask"
+		elif current_indicator == null:
 			spawn_explosion_sequence()
 
 	if event.is_action_pressed("dash") and not is_dashing and dash_cooldown_timer.is_stopped():
@@ -105,6 +133,7 @@ func start_dash():
 		look_at(global_position + dash_direction, Vector3.UP)
 
 	is_dashing = true
+	is_invincible = true;
 	dash_cooldown_timer.start(DASH_COOLDOWN)
 	dash_duration.start(0.2) # dash lasts 0.4 seconds
 	anim_player.play("run", -1, 2.0) # play run animation 2x faster
@@ -115,6 +144,7 @@ func start_dash():
 
 func stop_dash():
 	is_dashing = false
+	is_invincible = false
 
 	# launch everyone we collected
 	for enemy in pinned_enemies:
@@ -141,6 +171,16 @@ func stop_dash():
 	# Friction stop for the goose
 	velocity = velocity * 0.25
 
+	# input buffer
+	if buffered_input == "attack_primary":
+		attack_towards_mouse()
+	elif buffered_input == "attack_explosive_cask":
+		if current_indicator == null:
+			spawn_explosion_sequence()
+			
+	# Clear the buffer so it doesn't fire again automatically
+	buffered_input = ""
+
 func _on_dash_hitbox_body_entered(body):
 	if is_dashing and body.is_in_group("enemies") and not body in pinned_enemies:
 		pinned_enemies.append(body)
@@ -151,45 +191,37 @@ func attack_towards_mouse():
 	if attack_cooldown > 0: return
 
 	var target_pos = get_mouse_3d_position()
-	var attack_damage = 7
-	var is_lethal = true
-
 	if target_pos == Vector3.ZERO: return
-	
+
 	# look at mouse instantly
 	var look_target = Vector3(target_pos.x, global_position.y, target_pos.z)
 	look_at(look_target, Vector3.UP)
+	attack_hitbox.global_transform = attack_hitbox.global_transform
 	
-	# valculate direction vectors
-	var attack_dir = (look_target - global_position).normalized()
-	var attack_dir_2d = Vector2(attack_dir.x, attack_dir.z)
+	attack_hitbox.force_shapecast_update()
 	
-	# [DEBUG] Draw the hitbox on the floor
-	debug_draw_cone(attack_dir, ATTACK_RANGE, ATTACK_ANGLE)
-	
-	var enemies = get_tree().get_nodes_in_group("enemies")
-	for enemy in enemies:
-		# cylinder Distance Check
-		var dist = global_position.distance_to(enemy.global_position)
-		if dist <= ATTACK_RANGE:
-			
-			# cone Angle Check
-			var enemy_dir = enemy.global_position - global_position
-			var enemy_dir_2d = Vector2(enemy_dir.x, enemy_dir.z).normalized()
-			
-			# get the angle difference
-			var angle_diff = rad_to_deg(abs(attack_dir_2d.angle_to(enemy_dir_2d)))
-			
-			if angle_diff <= ATTACK_ANGLE:
-				enemy.take_damage(attack_damage, global_position, is_lethal)
+	is_attacking = true
 
+	anim_player.play("attack2", -1, 2.0)
+	
+	if attack_hitbox.is_colliding():
+		# Iterate through everyone we hit
+		for i in range(attack_hitbox.get_collision_count()):
+			var enemy = attack_hitbox.get_collider(i)
+			
+			# Avoid hitting the same enemy twice in one frame (rare but possible)
+			if enemy.is_in_group("enemies") and enemy.has_method("take_damage"):
+				enemy.take_damage(7, global_position, true)
+
+	# 3. Cooldown
 	attack_cooldown = ATTACK_COOLDOWN_TIME
+	
+	await get_tree().create_timer(0.25).timeout
+	is_attacking = false
 
 func spawn_explosion_sequence():
 	if not bomba_timer.is_stopped(): 
 		return
-
-	bomba_timer.start(BOMBA_COOLDOWN)
 
 	current_indicator = explosion_scene.instantiate()
 	get_parent().add_child(current_indicator)
@@ -199,15 +231,15 @@ func spawn_explosion_sequence():
 	
 	if is_instance_valid(current_indicator):
 		var locked_pos = current_indicator.global_position
+		bomba_timer.start(BOMBA_COOLDOWN)
 		current_indicator.start_charge_sequence(locked_pos)
 		current_indicator = null
 
 func take_damage(amount: int) -> void:
-	# 1. Gatekeeper: If we are invincible, ignore the hit
-	# if is_invincible:
-	# 	return
+	if is_invincible:
+		print("[DEBUG] dodged attack with iframes yay!")
+		return
 
-	# 2. Logic: Apply damage
 	# current_health -= amount
 	print("Player hit for %s" % amount)
 
@@ -235,53 +267,26 @@ func get_mouse_3d_position() -> Vector3:
 	
 	return intersection if intersection else Vector3.ZERO
 
-func debug_draw_cone(direction: Vector3, range_val: float, angle_deg: float):
-	# Create a temporary mesh instance
-	var debug_mesh = MeshInstance3D.new()
-	var immediate_mesh = ImmediateMesh.new()
-	var material = StandardMaterial3D.new()
-	
-	material.albedo_color = Color(1, 0, 0, 0.5) # Semi-transparent red
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	
-	debug_mesh.mesh = immediate_mesh
-	debug_mesh.material_override = material
-	
-	# Draw the fan shape
-	immediate_mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
-	
-	var segments = 10
-	var start_angle = -deg_to_rad(angle_deg)
-	var total_angle = deg_to_rad(angle_deg * 2)
-	var angle_per_segment = total_angle / segments
-	
-	# We draw relative to (0,0,0) then rotate the whole node
-	for i in range(segments):
-		var current_angle = start_angle + (i * angle_per_segment)
-		var next_angle = start_angle + ((i + 1) * angle_per_segment)
-		
-		var p1 = Vector3.ZERO
-		var p2 = Vector3(sin(current_angle) * range_val, 0.1, cos(current_angle) * range_val)
-		var p3 = Vector3(sin(next_angle) * range_val, 0.1, cos(next_angle) * range_val)
-		
-		# Add triangle vertices
-		immediate_mesh.surface_add_vertex(p1)
-		immediate_mesh.surface_add_vertex(p2)
-		immediate_mesh.surface_add_vertex(p3)
-		
-	immediate_mesh.surface_end()
-	
-	# Add to scene, align rotation, and delete after 0.1s
-	get_parent().add_child(debug_mesh)
-	debug_mesh.global_position = global_position
-	# Align the mesh forward (Z) with our attack direction
-	var target_look = global_position + direction
-	debug_mesh.look_at(target_look, Vector3.UP)
+func spawn_ghost_trail():
+	var original_mesh = $Armature/Skeleton3D/Cube 
+	if not original_mesh: return
 
-	debug_mesh.rotate_y(deg_to_rad(180))
-	
-	# Auto-delete
-	var timer = get_tree().create_timer(0.15)
-	timer.timeout.connect(debug_mesh.queue_free)
+	var ghost = MeshInstance3D.new()
+	ghost.mesh = original_mesh.mesh
+	ghost.transform = original_mesh.global_transform
+
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = Color(0.502, 0.8, 1.0, 0.784)
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.emission_enabled = true
+	mat.emission = Color(0.5, 0.8, 1.0)
+	mat.emission_energy_multiplier = 2.0
+
+	ghost.material_override = mat
+
+	# 4. Add to the WORLD, not the player (so it stays behind)
+	get_parent().add_child(ghost)
+
+	var tween = create_tween()
+	tween.tween_property(mat, "albedo_color:a", 0.0, 0.3) # Fade to invisible in 0.3s
+	tween.tween_callback(ghost.queue_free)

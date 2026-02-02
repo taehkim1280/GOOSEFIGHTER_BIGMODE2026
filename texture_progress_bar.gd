@@ -12,7 +12,6 @@ func _ready():
 
 func _process(_delta):
 	if is_instance_valid(bomba_timer) and not bomba_timer.is_stopped():
-		var ratio = bomba_timer.time_left / bomba_timer.wait_time
-		value = ratio * 100
+		value = bomba_timer.time_left / bomba_timer.wait_time * 100
 	else:
 		value = 0

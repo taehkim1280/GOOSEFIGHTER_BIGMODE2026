@@ -12,7 +12,6 @@ func _ready():
 
 func _process(_delta):
 	if is_instance_valid(dash_timer) and not dash_timer.is_stopped():
-		var ratio = dash_timer.time_left / dash_timer.wait_time
-		value = ratio * 100
+		value = dash_timer.time_left / dash_timer.wait_time * 100
 	else:
 		value = 0

@@ -2,7 +2,7 @@ extends Node3D
 
 # enemy *.tscn goes here...
 @export var enemy_scene: PackedScene 
-const MAX_ENEMIES = 7
+const MAX_ENEMIES = 3
 const ARENA_HALFSIZE = 10.0
 
 func _on_timer_timeout() -> void:
