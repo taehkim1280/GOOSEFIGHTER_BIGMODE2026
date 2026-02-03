@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://cdcx5120k0bsq"]
 
-[ext_resource type="Script" uid="uid://cwovpi8n811pt" path="res://main_menu.gd" id="1_06t4h"]
+[ext_resource type="Script" path="res://main_menu.gd" id="1_06t4h"]
+[ext_resource type="Texture2D" uid="uid://cg6lkov8blha4" path="res://assets/arenaver1.webp" id="2_fu7sn"]
+[ext_resource type="Script" uid="uid://crctaxqyhet05" path="res://title_text.gd" id="3_jix8l"]
 
 [node name="MainMenu" type="Control" unique_id=251939679]
 layout_mode = 3
@@ -11,21 +13,49 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_06t4h")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2104033249]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1234393710]
 layout_mode = 0
-offset_left = 445.0
-offset_top = 121.0
-offset_right = 675.0
-offset_bottom = 527.0
+offset_right = 1152.3013
+offset_bottom = 648.0
+mouse_filter = 2
+texture = ExtResource("2_fu7sn")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2104033249]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -115.0
+offset_top = 100.0
+offset_right = 115.0
+offset_bottom = 186.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="StartButton" type="Button" parent="VBoxContainer" unique_id=205452342]
 layout_mode = 2
 text = "Start Game"
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=1234393710]
-layout_mode = 0
-offset_right = 1152.0
-offset_bottom = 648.0
-mouse_filter = 2
+[node name="TitleText" type="Label" parent="." unique_id=1674014161]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "ALL GEESE MUST DIE"
+horizontal_alignment = 1
+script = ExtResource("3_jix8l")
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
