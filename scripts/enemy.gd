@@ -6,6 +6,9 @@ const WALL_SMASH_THRESHOLD = 100.0 # Damage needed to kill on wall hit
 const FREEZE_STACK_LIMIT = 3
 const SHORT_FREEZE_DURATION = 1.5 # Duration when frozen by 3 stacks
 
+@export_group("VFX")
+@export var death_vfx_scene: PackedScene
+
 # --- Nodes ---
 @onready var label = $Label3D
 @onready var anim_player = $AnimationPlayer
@@ -306,8 +309,21 @@ func apply_knockback(force: Vector3):
 	knockback_velocity = force
 	
 func die():
-	queue_free()
+	print("ENEMY SHATTERED! Attempting to spawn VFX...")
 
+	if death_vfx_scene:
+		print("- VFX Scene is assigned. Instantiating...")
+		var vfx = death_vfx_scene.instantiate()
+		# Add to the WORLD (get_parent), not the Enemy, or it will vanish with the enemy
+		get_parent().add_child(vfx)
+		vfx.global_position = global_position + Vector3(0, 1, 0)
+
+		# var debug_cube = MeshInstance3D.new()
+		# debug_cube.mesh = BoxMesh.new() # Big white cube
+		# get_parent().add_child(debug_cube)
+		# debug_cube.global_position = vfx.global_position
+
+	queue_free()
 
 # --- Visuals & Helpers ---
 
