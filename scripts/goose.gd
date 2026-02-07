@@ -257,8 +257,12 @@ func attack_towards_mouse():
 			
 			# Avoid hitting the same enemy twice in one frame (rare but possible)
 			if enemy.is_in_group("enemies") and enemy.has_method("take_damage"):
-				# DAMAGE VAR: Primary Attack
+				# 1. Apply Damage (Accumulates percentage)
 				enemy.take_damage(DAMAGE_PRIMARY, global_position, true)
+				
+				# 2. Apply Freeze Stack (New Mechanic)
+				if enemy.has_method("apply_freeze_stack"):
+					enemy.apply_freeze_stack()
 
 	# 3. Cooldown
 	attack_cooldown = ATTACK_COOLDOWN_TIME
