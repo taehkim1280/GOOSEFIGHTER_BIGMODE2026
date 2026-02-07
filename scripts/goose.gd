@@ -281,7 +281,7 @@ func take_damage(amount: int) -> void:
 
 
 	# 3. Visualization: Update UI / Flash Red
-	health_changed.emit(100*current_health/GameManager.max_health)
+	health_changed.emit(100.0*current_health/GameManager.max_health)
 
 	if current_health <= 0:
 		_die()
