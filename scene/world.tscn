@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://irod3awcgcod" path="res://scripts/ui_canvas.gd" id="9_vme25"]
 [ext_resource type="Script" uid="uid://ctai7npvyvnuw" path="res://scripts/texture_progress_bar.gd" id="10_oiypb"]
 [ext_resource type="Script" uid="uid://cob1fdew3qike" path="res://scripts/dash_bar.gd" id="11_a81yy"]
+[ext_resource type="Script" uid="uid://djyoj6cisgid0" path="res://scripts/freeze_bar.gd" id="12_a0bac"]
 [ext_resource type="Texture2D" uid="uid://b0b4v4ciybock" path="res://assets/ui/healthbar/healthbarUnder.png" id="12_qfj6m"]
 [ext_resource type="Texture2D" uid="uid://cb5j2kpjdgvkd" path="res://assets/ui/healthbar/healthbarTop.png" id="13_n02kn"]
 [ext_resource type="Texture2D" uid="uid://bhf7jgjhfmytv" path="res://assets/ui/healthbar/healthbarMiddle.png" id="14_puhxk"]
@@ -2604,6 +2605,14 @@ fill_mode = 4
 texture_under = SubResource("GradientTexture2D_ic0uy")
 texture_progress = SubResource("GradientTexture2D_2o6r5")
 script = ExtResource("11_a81yy")
+
+[node name="FreezeBar" type="TextureProgressBar" parent="UI Canvas/Control/HBoxContainer" unique_id=2008683786]
+layout_mode = 2
+rounded = true
+fill_mode = 4
+texture_under = SubResource("GradientTexture2D_ic0uy")
+texture_progress = SubResource("GradientTexture2D_2o6r5")
+script = ExtResource("12_a0bac")
 
 [node name="TopBar" type="Control" parent="UI Canvas" unique_id=364701054]
 layout_mode = 3
