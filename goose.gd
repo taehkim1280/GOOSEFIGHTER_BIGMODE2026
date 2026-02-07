@@ -15,6 +15,7 @@ signal health_changed(health_percent)
 @export var ATTACK_ANGLE: float = 45.0
 @export var attack_line_scene: PackedScene
 @export var explosion_scene: PackedScene
+@export var petrify_scene: PackedScene
 
 # --- Variables ---
 var current_health = 100
@@ -28,6 +29,10 @@ var pinned_enemies: Array[Node3D] = []
 var is_invincible: bool = false
 var ghost_spawn_timer: float = 0.0
 var buffered_input: String = ""
+const PETRIFY_COOLDOWN = 1.0
+var petrify_indicator: Node3D = null
+var is_frozen: bool = false # Player frozen state
+
 
 # --- Onready Nodes ---
 @onready var bomba_timer = $BombaTimer
@@ -37,6 +42,7 @@ var buffered_input: String = ""
 @onready var camera = get_viewport().get_camera_3d()
 @onready var anim_player = $AnimationPlayer
 @onready var attack_hitbox = $PrimaryAttackHitbox
+@onready var petrify_timer = $PetrifyTimer
 
 # --- Lifecycle ---
 
@@ -46,12 +52,25 @@ func _ready():
 	call_deferred("emit_signal", "health_changed", 100*current_health/GameManager.max_health)
 
 func _process(_delta):
+	var mouse_pos = get_mouse_3d_position()
+	
+	if mouse_pos == Vector3.ZERO:
+		return
+
+	# 1. Move Explosive Cask Indicator
 	if is_instance_valid(current_indicator):
-		var pos = get_mouse_3d_position()
-		if pos != Vector3.ZERO:
-			current_indicator.global_position = pos
+		current_indicator.global_position = mouse_pos
+
+	# 2. Move Petrify Indicator
+	if is_instance_valid(petrify_indicator):
+		petrify_indicator.global_position = mouse_pos
 
 func _physics_process(_delta: float) -> void:
+	if is_frozen:
+		velocity = velocity.move_toward(Vector3.ZERO, 1.0 * _delta)
+		move_and_slide()
+		return # Player loses control!
+
 	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var raw_dir := Vector3(input_dir.x, 0, input_dir.y)
 	var direction := raw_dir.rotated(Vector3.UP, deg_to_rad(45)).normalized()
@@ -121,6 +140,11 @@ func _input(event):
 		elif current_indicator == null:
 			spawn_explosion_sequence()
 
+	if event.is_action_pressed("ability_petrify"): 
+		# Only run if we aren't already aiming one
+		if petrify_indicator == null:
+			spawn_petrify_sequence()
+
 	if event.is_action_pressed("dash") and not is_dashing and dash_cooldown_timer.is_stopped():
 		start_dash()
 
@@ -188,8 +212,14 @@ func stop_dash():
 	buffered_input = ""
 
 func _on_dash_hitbox_body_entered(body):
-	if is_dashing and body.is_in_group("enemies") and not body in pinned_enemies:
-		pinned_enemies.append(body)
+	if is_dashing and body.is_in_group("enemies"):
+		if body.get("is_frozen"):
+			# LAUNCH THEM!
+			body.hit_by_ice_slide(dash_direction)
+		else:
+			# Normal pin logic
+			if not body in pinned_enemies:
+				pinned_enemies.append(body)
 
 # --- Combat Mechanics ---
 
@@ -256,6 +286,36 @@ func take_damage(amount: int) -> void:
 	if current_health <= 0:
 		_die()
 
+func spawn_petrify_sequence():
+	if not petrify_timer.is_stopped():
+		return
+
+	petrify_timer.start(PETRIFY_COOLDOWN)
+
+	# 1. Spawn the indicator
+	petrify_indicator = petrify_scene.instantiate()
+	get_parent().add_child(petrify_indicator)
+	petrify_indicator.set_indicator_mode()
+	
+	# 2. Wait for 0.3 seconds (Aiming time)
+	# The _process loop handles moving it during this time
+	await get_tree().create_timer(0.3).timeout
+	
+	# 3. Lock and Fire
+	if is_instance_valid(petrify_indicator):
+		var locked_pos = petrify_indicator.global_position
+		petrify_indicator.start_cast_sequence(locked_pos)
+		petrify_indicator = null
+
+# --- Friendly Fire Freeze ---
+func apply_freeze(duration):
+	is_frozen = true
+	velocity = Vector3.ZERO
+	anim_player.pause() # Stop animation
+	await get_tree().create_timer(duration).timeout
+	is_frozen = false
+	anim_player.play()
+	
 func _die():
 	level_complete()
 

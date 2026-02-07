@@ -13,6 +13,9 @@
 [ext_resource type="Texture2D" uid="uid://b0b4v4ciybock" path="res://assets/ui/healthbar/healthbarUnder.png" id="11_70uel"]
 [ext_resource type="Texture2D" uid="uid://cb5j2kpjdgvkd" path="res://assets/ui/healthbar/healthbarTop.png" id="12_hiqwa"]
 [ext_resource type="Texture2D" uid="uid://bhf7jgjhfmytv" path="res://assets/ui/healthbar/healthbarMiddle.png" id="13_2u3nc"]
+[ext_resource type="PackedScene" uid="uid://bqgvw1avx656m" path="res://petrify_zone.tscn" id="6_wse8f"]
+[ext_resource type="Script" uid="uid://ctai7npvyvnuw" path="res://texture_progress_bar.gd" id="9_ioo17"]
+[ext_resource type="Script" uid="uid://cob1fdew3qike" path="res://dash_bar.gd" id="10_wse8f"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_gbfbk"]
 
@@ -2221,6 +2224,7 @@ collision_layer = 2
 script = ExtResource("1_f3sb7")
 attack_line_scene = ExtResource("2_036b0")
 explosion_scene = ExtResource("3_dwbse")
+petrify_scene = ExtResource("6_wse8f")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Goose" unique_id=1006528382]
 shape = SubResource("CapsuleShape3D_036b0")
@@ -2539,6 +2543,9 @@ libraries/ = SubResource("AnimationLibrary_k3n1d")
 transform = Transform3D(4.51, 0, 0, 0, 5, 0, 0, 0, 5, 0, 5, -2)
 shape = SubResource("BoxShape3D_2o6r5")
 collision_mask = 4
+
+[node name="PetrifyTimer" type="Timer" parent="Goose" unique_id=2068550867]
+one_shot = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1109783111]
 transform = Transform3D(0.539483, 0.1306471, 0.8317989, -0.81290555, -0.17661655, 0.55496955, 0.21941456, -0.97557044, 0.010922074, 0, 6.194148, 0)

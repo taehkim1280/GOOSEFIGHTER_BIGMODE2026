@@ -1261,6 +1261,20 @@ radius = 0.6
 height = 3.515
 radius = 1.8
 
+[sub_resource type="Gradient" id="Gradient_7k104"]
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4gyqm"]
+gradient = SubResource("Gradient_7k104")
+height = 8
+
+[sub_resource type="Gradient" id="Gradient_qi2p4"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_iifgy"]
+gradient = SubResource("Gradient_qi2p4")
+height = 8
+
 [node name="Enemy" type="CharacterBody3D" unique_id=1713418842 groups=["enemies"]]
 transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
 collision_layer = 4
@@ -1546,3 +1560,15 @@ one_shot = true
 
 [node name="AttackWindup" type="Timer" parent="." unique_id=681362258]
 one_shot = true
+
+[node name="StunBar" type="Node3D" parent="." unique_id=730033685]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4269645, 0)
+visible = false
+
+[node name="Background" type="Sprite3D" parent="StunBar" unique_id=512168776]
+billboard = 1
+texture = SubResource("GradientTexture2D_4gyqm")
+
+[node name="Fill" type="Sprite3D" parent="StunBar" unique_id=982347722]
+billboard = 1
+texture = SubResource("GradientTexture2D_iifgy")
