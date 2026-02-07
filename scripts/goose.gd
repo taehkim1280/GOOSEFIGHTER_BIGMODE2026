@@ -49,7 +49,7 @@ var is_frozen: bool = false # Player frozen state
 func _ready():
 	dash_hitbox.body_entered.connect(_on_dash_hitbox_body_entered)
 	current_health = GameManager.current_health
-	call_deferred("emit_signal", "health_changed", 100*current_health/GameManager.max_health)
+	call_deferred("emit_signal", "health_changed", 100.0*current_health/GameManager.max_health)
 
 func _process(_delta):
 	var mouse_pos = get_mouse_3d_position()

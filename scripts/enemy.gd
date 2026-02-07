@@ -346,7 +346,7 @@ func setup_stun_bar():
 	# --- RE-CENTERING ---
 	# Since we made it bigger, we need to shift it further left to keep it centered.
 	# Formula: -(Width_in_Pixels * Scale_Factor) / 2
-	# stun_bar.position.x = -(bar_width_px * scale_factor) / 2.0
+	stun_bar.position.x = -(bar_width_px * scale_factor) / 2.0
 
 func _spawn_debug_lines() -> void:
 	if OS.is_debug_build() && false:

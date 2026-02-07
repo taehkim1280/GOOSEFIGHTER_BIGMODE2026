@@ -1,7 +1,7 @@
 extends Node3D
 
 const RADIUS = 4.0  # The size of the zone
-const FREEZE_DURATION = 1.5
+const FREEZE_DURATION = 2.5
 
 @onready var mesh = $MeshInstance3D
 
