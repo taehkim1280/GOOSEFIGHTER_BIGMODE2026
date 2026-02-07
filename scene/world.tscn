@@ -2614,11 +2614,18 @@ offset_left = -20.0
 offset_right = 20.0
 offset_bottom = 40.0
 grow_horizontal = 2
+size_flags_horizontal = 4
 
 [node name="HealthBar" type="TextureProgressBar" parent="UI Canvas/TopBar" unique_id=421733680]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -81.00001
+offset_right = 319.0
+offset_bottom = 100.0
+grow_horizontal = 2
+scale = Vector2(0.415, 0.415)
 texture_under = ExtResource("12_qfj6m")
 texture_over = ExtResource("13_n02kn")
 texture_progress = ExtResource("14_puhxk")

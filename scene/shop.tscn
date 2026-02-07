@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://d4eo4uytpnwst"]
 
 [ext_resource type="Script" uid="uid://daonprotxr3xd" path="res://scripts/shop.gd" id="1_viryw"]
+[ext_resource type="Texture2D" uid="uid://dv1bvneo4s7ix" path="res://assets/ui/shop/SHOPBASE.jpg" id="2_4p3p6"]
 
 [node name="Shop" type="Control" unique_id=1215132281]
 layout_mode = 3
@@ -28,5 +29,8 @@ offset_bottom = 23.0
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1922896419]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = ExtResource("2_4p3p6")
+expand_mode = 2
+stretch_mode = 6
