@@ -6,6 +6,9 @@ const ATTACK_COOLDOWN_TIME = 0.3
 const BOMBA_COOLDOWN = 4.0
 const DASH_COOLDOWN = 0.5 
 
+##### SIGNALS #############
+signal health_changed(health_percent)
+
 # --- Exports ---
 @export var DASH_SPEED: float = 25.0
 @export var DASH_KNOCKBACK = 30.0
@@ -40,6 +43,7 @@ var buffered_input: String = ""
 func _ready():
 	dash_hitbox.body_entered.connect(_on_dash_hitbox_body_entered)
 	current_health = GameManager.current_health
+	call_deferred("emit_signal", "health_changed", 100*current_health/GameManager.max_health)
 
 func _process(_delta):
 	if is_instance_valid(current_indicator):
@@ -245,8 +249,9 @@ func take_damage(amount: int) -> void:
 	current_health -= amount
 	print("Player hit for %s" % amount)
 
+
 	# 3. Visualization: Update UI / Flash Red
-	# emit_signal("health_changed", current_health)
+	health_changed.emit(100*current_health/GameManager.max_health)
 
 	if current_health <= 0:
 		_die()
