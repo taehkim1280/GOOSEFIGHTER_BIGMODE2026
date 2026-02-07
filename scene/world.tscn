@@ -26,7 +26,8 @@ albedo_texture = ExtResource("2_a0bac")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pkg7o"]
 transparency = 1
-albedo_color = Color(0.78775924, 0.78775924, 0.78775924, 1)
+cull_mode = 2
+albedo_color = Color(0.7882353, 0.7882353, 0.7882353, 0)
 metallic_specular = 0.0
 shadow_to_opacity = true
 
