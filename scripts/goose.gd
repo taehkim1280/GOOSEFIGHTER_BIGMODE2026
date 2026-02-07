@@ -10,9 +10,17 @@ const DASH_COOLDOWN = 0.5
 signal health_changed(health_percent)
 
 # --- Exports ---
+@export_group("Movement Settings")
 @export var DASH_SPEED: float = 25.0
 @export var DASH_KNOCKBACK = 30.0
+
+@export_group("Combat Settings")
 @export var ATTACK_ANGLE: float = 45.0
+@export var DAMAGE_PRIMARY: float = 4.0
+@export var DAMAGE_DASH: float = 4.0
+@export var DAMAGE_DASH_WALL_BONUS: float = 15.0 # Added to base dash damage when hitting a wall
+
+@export_group("Abilities")
 @export var attack_line_scene: PackedScene
 @export var explosion_scene: PackedScene
 @export var petrify_scene: PackedScene
@@ -79,7 +87,7 @@ func _physics_process(_delta: float) -> void:
 		## ONLY rotate if we are NOT attacking
 		##if is_attacking: print("is_attacking is true")
 		#if not is_attacking:
-				#look_at(position + direction, Vector3.UP)
+			#look_at(position + direction, Vector3.UP)
 
 	if is_dashing:
 		velocity = dash_direction * DASH_SPEED
@@ -184,12 +192,14 @@ func stop_dash():
 			
 			# if we stopped because of a wall, deal EXTRA damage
 			if is_on_wall():
-				enemy.take_damage(20.0, global_position, false)
+				# DAMAGE VAR: Base + Wall Bonus
+				enemy.take_damage(DAMAGE_DASH + DAMAGE_DASH_WALL_BONUS, global_position, false)
 				# bounce them back slightly from the wall
 				_launch_dir = -dash_direction 
 			else:
 				# normal release (dash ended naturally)
-				enemy.take_damage(10.0, global_position, false)
+				# DAMAGE VAR: Base Only
+				enemy.take_damage(DAMAGE_DASH, global_position, false)
 			
 			# Apply the momentum (This assumes your enemy script handles knockback)
 			# You might need to manually apply velocity if take_damage doesn't do it
@@ -247,7 +257,8 @@ func attack_towards_mouse():
 			
 			# Avoid hitting the same enemy twice in one frame (rare but possible)
 			if enemy.is_in_group("enemies") and enemy.has_method("take_damage"):
-				enemy.take_damage(7, global_position, true)
+				# DAMAGE VAR: Primary Attack
+				enemy.take_damage(DAMAGE_PRIMARY, global_position, true)
 
 	# 3. Cooldown
 	attack_cooldown = ATTACK_COOLDOWN_TIME
@@ -337,7 +348,7 @@ func get_mouse_3d_position() -> Vector3:
 	var ray_direction = camera.project_ray_normal(mouse_pos)
 	
 	# intersect with a horizontal plane at y=1 (where geese live)
-	var plane = Plane(Vector3.UP, 1.0)
+	var plane = Plane(Vector3.UP, 0.0)
 	var intersection = plane.intersects_ray(ray_origin, ray_direction)
 	
 	return intersection if intersection else Vector3.ZERO

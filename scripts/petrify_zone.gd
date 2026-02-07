@@ -6,10 +6,18 @@ const FREEZE_DURATION = 2.5
 @onready var mesh = $MeshInstance3D
 
 func set_indicator_mode():
-	# Make it look like a "ghost" indicator
 	mesh.transparency = 0.5
-	# Scale the visual mesh to match the RADIUS (assuming mesh is 1 unit wide)
-	scale = Vector3(RADIUS * 1, 1, RADIUS * 1) 
+	scale = Vector3(RADIUS * 1, 1, RADIUS * 1)
+
+	# Ensure the mesh uses a unique material so we don't change shared assets
+	if mesh.get_surface_override_material(0) == null:
+		mesh.set_surface_override_material(0, StandardMaterial3D.new())
+
+	var mat = mesh.get_surface_override_material(0)
+	if mat:
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.albedo_color = Color(0, 1, 1, 0.5) # Ensure it has color
+		mat.render_priority = 1 # Draw on top of floor
 
 func start_cast_sequence(pos: Vector3):
 	global_position = pos

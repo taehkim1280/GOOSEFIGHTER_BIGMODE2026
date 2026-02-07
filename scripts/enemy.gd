@@ -47,12 +47,17 @@ var peckattackRadius = 1
 # --- Clap Settings ---
 var clapattackWindup = 0.8
 
-
 # --- Lifecycle ---
 
 func _ready():
 	add_to_group("enemies")
 	player = get_tree().get_first_node_in_group("player")
+
+	if label:
+		label.no_depth_test = true      # Visible through walls
+		label.outline_render_priority = 19
+		label.render_priority = 20      # Draw on top of Stun Bar
+		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	
 	update_label()
 	
@@ -81,21 +86,32 @@ func _physics_process(delta):
 		# Update Visual Bar
 		if stun_bar and stun_fill and stun_duration_total > 0:
 			var ratio = stun_timer / stun_duration_total
-			# Clamp ensures it doesn't flip or glitch when < 0
 			stun_fill.scale.x = clamp(ratio, 0.0, 1.0)
 
 		# Check if done
 		if stun_timer <= 0:
 			thaw()
-			return # Exit early
+			return 
 
-		# Ice Physics
-		velocity = ice_velocity
-		move_and_slide()
+		# --- Knockback WHILE Frozen ---
+		velocity = ice_velocity + knockback_velocity
 		
+		# FIX: Use 'if' directly to avoid declaring "var collided" twice
+		if move_and_slide():
+			for i in get_slide_collision_count():
+				var collision = get_slide_collision(i)
+				
+				# Bounce logic (Frozen)
+				if knockback_velocity.length() > 2.0:
+					var reflection = knockback_velocity.bounce(collision.get_normal())
+					knockback_velocity = Vector3(reflection.x, 0, reflection.z) * 0.7
+		
+		# --- Decays ---
 		ice_velocity = ice_velocity.move_toward(Vector3.ZERO, ice_friction * delta)
+		knockback_velocity = knockback_velocity.move_toward(Vector3.ZERO, 20.0 * delta)
 		
-		if is_on_wall() and ice_velocity.length() > 5.0:
+		# Extra Damage if smashed into wall fast (Ice Shatter)
+		if is_on_wall() and (ice_velocity.length() > 5.0 or knockback_velocity.length() > 10.0):
 			take_damage(50.0, global_position, true)
 			thaw()
 			
@@ -117,12 +133,8 @@ func _physics_process(delta):
 	# Combine chase speed and current knockback
 	velocity = final_velocity + knockback_velocity
 
-	var collided = move_and_slide()
-
-	# --------------------------
-	# 3. WALL BOUNCE LOGIC
-	# --------------------------
-	if collided:
+	# FIX: Use 'if' directly here as well
+	if move_and_slide():
 		for i in get_slide_collision_count():
 			var collision = get_slide_collision(i)
 			
@@ -166,6 +178,9 @@ func apply_freeze(duration: float):
 		var blue_mat = StandardMaterial3D.new()
 		blue_mat.albedo_color = Color(0.3, 0.9, 1.0, 0.6) # Semi-transparent blue
 		blue_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+
+		blue_mat.render_priority = 1
+
 		blue_mat.roughness = 0.1 # Shiny
 		blue_mat.emission_enabled = true
 		blue_mat.emission = Color(0.1, 0.3, 0.8) 
@@ -284,6 +299,8 @@ func spawn_telegraph(pos: Vector3, radius: float, duration: float) -> void:
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+
+	mat.render_priority = 1
 	
 	indicator.material_override = mat
 	indicator2.material_override = mat
@@ -319,7 +336,7 @@ func setup_stun_bar():
 	# 0.02 = Medium
 	# 0.04 = Large
 	var scale_factor = 0.03 
-	var bar_width_px = 200.0 # Approximate width of your texture in pixels
+	# var bar_width_px = 200.0 # Approximate width of your texture in pixels
 
 	# --- BACKGROUND ---
 	if stun_bg:
@@ -346,7 +363,7 @@ func setup_stun_bar():
 	# --- RE-CENTERING ---
 	# Since we made it bigger, we need to shift it further left to keep it centered.
 	# Formula: -(Width_in_Pixels * Scale_Factor) / 2
-	stun_bar.position.x = -(bar_width_px * scale_factor) / 2.0
+	# stun_bar.position.x = -(bar_width_px * scale_factor) / 2.0
 
 func _spawn_debug_lines() -> void:
 	if OS.is_debug_build() && false:
