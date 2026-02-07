@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bqgvw1avx656m"]
+
+[ext_resource type="Script" uid="uid://pxx8wk02qfgq" path="res://petrify_zone.gd" id="1_snful"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_o8s4a"]
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.01
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u44ud"]
+transparency = 1
+albedo_color = Color(0.5568628, 1, 1, 0.42745098)
+
+[node name="Node3D" type="Node3D" unique_id=769668464]
+script = ExtResource("1_snful")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=24691196]
+transform = Transform3D(1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_o8s4a")
+surface_material_override/0 = SubResource("StandardMaterial3D_u44ud")
