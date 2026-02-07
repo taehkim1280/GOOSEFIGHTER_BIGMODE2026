@@ -14,6 +14,7 @@ const SHORT_FREEZE_DURATION = 1.5 # Duration when frozen by 3 stacks
 @onready var stun_bar = $StunBar
 @onready var stun_fill = $StunBar/Fill
 @onready var stun_bg = $StunBar/Background
+@onready var separation_area = $SeparationArea
 
 # --- Combat Nodes ---
 @onready var attackCD = $AttackCD
@@ -26,6 +27,7 @@ const SHORT_FREEZE_DURATION = 1.5 # Duration when frozen by 3 stacks
 
 # --- State Variables ---
 var player: Node3D = null
+var separation_force: float = 4.0
 var accumulated_damage: float = 0.0 # Replaces "health_percent"
 var freeze_stacks: int = 0
 
@@ -140,8 +142,15 @@ func _physics_process(delta):
 	if player and not is_being_knocked_back:
 		var dir = (player.global_position - global_position).normalized()
 		dir.y = 0
+		var chase_velocity = dir * SPEED
+		
+		# 2. Separation Velocity (The Anti-Merge Push)
+		var push_velocity = get_separation_velocity()
+		
+		# Combine them
+		final_velocity = chase_velocity + push_velocity
+
 		look_at(global_position + dir, Vector3.UP)
-		final_velocity = dir * SPEED
 
 	# Combine chase speed and current knockback
 	velocity = final_velocity + knockback_velocity
@@ -203,6 +212,7 @@ func apply_freeze(duration: float):
 	velocity = Vector3.ZERO 
 	ice_velocity = Vector3.ZERO
 	
+	anim_player.pause()
 	# Visual: Turn Ice Blue
 	if mesh:
 		var blue_mat = StandardMaterial3D.new()
@@ -222,6 +232,9 @@ func apply_freeze(duration: float):
 
 func thaw():
 	is_frozen = false
+
+	anim_player.play()
+
 	if mesh:
 		mesh.material_override = null 
 	if stun_bar:
@@ -401,6 +414,35 @@ func setup_stun_bar():
 	# Since we made it bigger, we need to shift it further left to keep it centered.
 	# Formula: -(Width_in_Pixels * Scale_Factor) / 2
 	# stun_bar.position.x = -(bar_width_px * scale_factor) / 2.0
+
+func get_separation_velocity() -> Vector3:
+	var force_vector = Vector3.ZERO
+	if not separation_area: return force_vector
+	
+	var neighbors = separation_area.get_overlapping_bodies()
+	var count = 0
+	
+	for neighbor in neighbors:
+		# Don't push away from yourself!
+		if neighbor == self: continue
+		
+		# Only push away from other enemies (optional check if mask is set right)
+		if neighbor.is_in_group("enemies"):
+			var diff = global_position - neighbor.global_position
+			var dist = diff.length()
+			
+			# The closer they are, the stronger the push
+			if dist > 0:
+				# We divide by dist so closer enemies push HARDER
+				force_vector += diff.normalized() / dist
+				count += 1
+	
+	if count > 0:
+		# Average the push and apply strength
+		force_vector = force_vector / count
+		return force_vector * separation_force
+	
+	return Vector3.ZERO
 
 func _spawn_debug_lines() -> void:
 	if OS.is_debug_build() && false:

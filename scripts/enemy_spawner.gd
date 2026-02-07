@@ -13,7 +13,7 @@ func _on_timer_timeout() -> void:
 
 func spawn_enemy():
 	var new_enemy = enemy_scene.instantiate()
-	
+
 	var local_pos = Vector3(
 		randf_range(-ARENA_HALFSIZE, ARENA_HALFSIZE),
 		0.0,
