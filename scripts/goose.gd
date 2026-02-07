@@ -16,7 +16,7 @@ signal health_changed(health_percent)
 
 @export_group("Combat Settings")
 @export var ATTACK_ANGLE: float = 45.0
-@export var DAMAGE_PRIMARY: float = 50.0
+@export var DAMAGE_PRIMARY: float = 4.0
 @export var DAMAGE_DASH: float = 4.0
 @export var DAMAGE_DASH_WALL_BONUS: float = 15.0 # Added to base dash damage when hitting a wall
 
