@@ -1,27 +1,25 @@
 [gd_scene format=4 uid="uid://crmist5ct07gu"]
 
-[ext_resource type="Script" uid="uid://bfmcigtn3wt52" path="res://goose.gd" id="1_f3sb7"]
-[ext_resource type="PackedScene" uid="uid://bxp3mer64vbso" path="res://scene/debug_attackline.tscn" id="2_036b0"]
-[ext_resource type="Script" uid="uid://bsyfdo60t10pr" path="res://scripts/camera_3d.gd" id="2_fj7yv"]
-[ext_resource type="Texture2D" uid="uid://xuup2ey3xe6" path="res://assets/arena_ortho.jpg" id="2_wse8f"]
-[ext_resource type="PackedScene" uid="uid://duqlr3ra2icql" path="res://scene/explosive_cask.tscn" id="3_dwbse"]
-[ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://enemy.tscn" id="3_tlwt5"]
-[ext_resource type="Script" uid="uid://cpmpq25kjfyw0" path="res://scripts/enemy_spawner.gd" id="4_aqk2v"]
-[ext_resource type="Script" uid="uid://irod3awcgcod" path="res://scripts/ui_canvas.gd" id="8_2o6r5"]
-[ext_resource type="Script" uid="uid://ctai7npvyvnuw" path="res://scripts/texture_progress_bar.gd" id="9_ioo17"]
-[ext_resource type="Script" uid="uid://cob1fdew3qike" path="res://scripts/dash_bar.gd" id="10_wse8f"]
-[ext_resource type="Texture2D" uid="uid://b0b4v4ciybock" path="res://assets/ui/healthbar/healthbarUnder.png" id="11_70uel"]
-[ext_resource type="Texture2D" uid="uid://cb5j2kpjdgvkd" path="res://assets/ui/healthbar/healthbarTop.png" id="12_hiqwa"]
-[ext_resource type="Texture2D" uid="uid://bhf7jgjhfmytv" path="res://assets/ui/healthbar/healthbarMiddle.png" id="13_2u3nc"]
-[ext_resource type="PackedScene" uid="uid://bqgvw1avx656m" path="res://petrify_zone.tscn" id="6_wse8f"]
-[ext_resource type="Script" uid="uid://ctai7npvyvnuw" path="res://texture_progress_bar.gd" id="9_ioo17"]
-[ext_resource type="Script" uid="uid://cob1fdew3qike" path="res://dash_bar.gd" id="10_wse8f"]
+[ext_resource type="Script" uid="uid://bsyfdo60t10pr" path="res://scripts/camera_3d.gd" id="1_bqa5m"]
+[ext_resource type="Texture2D" uid="uid://xuup2ey3xe6" path="res://assets/arena_ortho.jpg" id="2_a0bac"]
+[ext_resource type="Script" uid="uid://bfmcigtn3wt52" path="res://scripts/goose.gd" id="3_tmyho"]
+[ext_resource type="PackedScene" uid="uid://bxp3mer64vbso" path="res://scene/debug_attackline.tscn" id="4_hnm4a"]
+[ext_resource type="PackedScene" uid="uid://duqlr3ra2icql" path="res://scene/explosive_cask.tscn" id="5_e4vd1"]
+[ext_resource type="PackedScene" uid="uid://bqgvw1avx656m" path="res://scene/petrify_zone.tscn" id="6_1402k"]
+[ext_resource type="Script" uid="uid://cpmpq25kjfyw0" path="res://scripts/enemy_spawner.gd" id="7_ol7uo"]
+[ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://scene/enemy.tscn" id="8_a7xoa"]
+[ext_resource type="Script" uid="uid://irod3awcgcod" path="res://scripts/ui_canvas.gd" id="9_vme25"]
+[ext_resource type="Script" uid="uid://ctai7npvyvnuw" path="res://scripts/texture_progress_bar.gd" id="10_oiypb"]
+[ext_resource type="Script" uid="uid://cob1fdew3qike" path="res://scripts/dash_bar.gd" id="11_a81yy"]
+[ext_resource type="Texture2D" uid="uid://b0b4v4ciybock" path="res://assets/ui/healthbar/healthbarUnder.png" id="12_qfj6m"]
+[ext_resource type="Texture2D" uid="uid://cb5j2kpjdgvkd" path="res://assets/ui/healthbar/healthbarTop.png" id="13_n02kn"]
+[ext_resource type="Texture2D" uid="uid://bhf7jgjhfmytv" path="res://assets/ui/healthbar/healthbarMiddle.png" id="14_puhxk"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_gbfbk"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ioo17"]
 shading_mode = 0
-albedo_texture = ExtResource("2_wse8f")
+albedo_texture = ExtResource("2_a0bac")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_fj7yv"]
 
@@ -2161,7 +2159,7 @@ fov = 56.5
 size = 14.0
 near = 0.296
 far = 165.35
-script = ExtResource("2_fj7yv")
+script = ExtResource("1_bqa5m")
 
 [node name="background" type="Node3D" parent="." unique_id=1350863833]
 transform = Transform3D(0.7071067, 0, 0.70710677, 0, 1, 0, -0.7071067, 0, 0.70710677, -50, -50, -50)
@@ -2221,10 +2219,10 @@ debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 [node name="Goose" type="CharacterBody3D" parent="." unique_id=1676621756 groups=["player"]]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.554, 0)
 collision_layer = 2
-script = ExtResource("1_f3sb7")
-attack_line_scene = ExtResource("2_036b0")
-explosion_scene = ExtResource("3_dwbse")
-petrify_scene = ExtResource("6_wse8f")
+script = ExtResource("3_tmyho")
+attack_line_scene = ExtResource("4_hnm4a")
+explosion_scene = ExtResource("5_e4vd1")
+petrify_scene = ExtResource("6_1402k")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Goose" unique_id=1006528382]
 shape = SubResource("CapsuleShape3D_036b0")
@@ -2557,8 +2555,8 @@ sky_mode = 1
 environment = SubResource("Environment_fj7yv")
 
 [node name="Enemy Spawner" type="Node3D" parent="." unique_id=1709805554]
-script = ExtResource("4_aqk2v")
-enemy_scene = ExtResource("3_tlwt5")
+script = ExtResource("7_ol7uo")
+enemy_scene = ExtResource("8_a7xoa")
 
 [node name="Timer" type="Timer" parent="Enemy Spawner" unique_id=792405949]
 wait_time = 3.0
@@ -2566,7 +2564,7 @@ autostart = true
 script = SubResource("GDScript_036b0")
 
 [node name="UI Canvas" type="CanvasLayer" parent="." unique_id=1506551400]
-script = ExtResource("8_2o6r5")
+script = ExtResource("9_vme25")
 
 [node name="Control" type="Control" parent="UI Canvas" unique_id=965256485]
 layout_mode = 3
@@ -2597,7 +2595,7 @@ rounded = true
 fill_mode = 4
 texture_under = SubResource("GradientTexture2D_ic0uy")
 texture_progress = SubResource("GradientTexture2D_2o6r5")
-script = ExtResource("9_ioo17")
+script = ExtResource("10_oiypb")
 
 [node name="DashBar" type="TextureProgressBar" parent="UI Canvas/Control/HBoxContainer" unique_id=2109863386]
 layout_mode = 2
@@ -2605,7 +2603,7 @@ rounded = true
 fill_mode = 4
 texture_under = SubResource("GradientTexture2D_ic0uy")
 texture_progress = SubResource("GradientTexture2D_2o6r5")
-script = ExtResource("10_wse8f")
+script = ExtResource("11_a81yy")
 
 [node name="TopBar" type="Control" parent="UI Canvas" unique_id=364701054]
 layout_mode = 3
@@ -2621,9 +2619,9 @@ grow_horizontal = 2
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-texture_under = ExtResource("11_70uel")
-texture_over = ExtResource("12_hiqwa")
-texture_progress = ExtResource("13_2u3nc")
+texture_under = ExtResource("12_qfj6m")
+texture_over = ExtResource("13_n02kn")
+texture_progress = ExtResource("14_puhxk")
 
 [connection signal="health_changed" from="Goose" to="UI Canvas" method="_on_goose_health_changed"]
 [connection signal="timeout" from="Enemy Spawner/Timer" to="Enemy Spawner" method="_on_timer_timeout"]

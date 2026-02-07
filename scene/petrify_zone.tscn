@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bqgvw1avx656m"]
 
-[ext_resource type="Script" uid="uid://pxx8wk02qfgq" path="res://petrify_zone.gd" id="1_snful"]
+[ext_resource type="Script" uid="uid://pxx8wk02qfgq" path="res://scripts/petrify_zone.gd" id="1_snful"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_o8s4a"]
 top_radius = 1.0

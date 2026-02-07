@@ -327,7 +327,7 @@ func level_complete():
 	# GameManager.gold += 100 # Reward for winning
 
 	# Go to Shop
-	get_tree().change_scene_to_file("res://shop.tscn")
+	get_tree().change_scene_to_file("res://scene/shop.tscn")
 
 # --- Utilities ---
 
