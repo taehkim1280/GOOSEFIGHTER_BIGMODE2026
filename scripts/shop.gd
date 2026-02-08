@@ -1,6 +1,6 @@
 extends Control
 
-@onready var gold_label = $GoldLabel
+@onready var gold_label = $GoldDisplay/GoldLabel
 
 var items = {
 	"snowball": {

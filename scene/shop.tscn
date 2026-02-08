@@ -14,30 +14,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_viryw")
 
-[node name="GoldLabel" type="Label" parent="." unique_id=1890007563]
-z_index = 2
-layout_mode = 1
-offset_left = 109.0
-offset_top = 52.0
-offset_right = 187.0
-offset_bottom = 102.0
-theme_override_font_sizes/font_size = 30
-text = "x999"
-vertical_alignment = 1
-
-[node name="GoldCountUI" type="TextureRect" parent="." unique_id=223530226]
-z_index = 1
-custom_minimum_size = Vector2(10, 10)
-layout_mode = 1
-offset_left = -12.785
-offset_top = -29.305
-offset_right = 1139.215
-offset_bottom = 618.695
-mouse_filter = 2
-texture = ExtResource("2_phbgv")
-expand_mode = 2
-stretch_mode = 6
-
 [node name="ShopBackground" type="TextureRect" parent="." unique_id=1922896419]
 layout_mode = 0
 offset_right = 1152.0
@@ -71,3 +47,32 @@ layout_mode = 2
 
 [node name="ShopItem3" parent="listings" unique_id=1716636310 instance=ExtResource("2_uyq3k")]
 layout_mode = 2
+
+[node name="GoldDisplay" type="Control" parent="." unique_id=1821829510]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="GoldLabel" type="Label" parent="GoldDisplay" unique_id=1890007563]
+z_index = 2
+layout_mode = 1
+offset_left = 109.0
+offset_top = 52.0
+offset_right = 187.0
+offset_bottom = 102.0
+theme_override_font_sizes/font_size = 30
+text = "x999"
+vertical_alignment = 1
+
+[node name="GoldCountUI" type="TextureRect" parent="GoldDisplay" unique_id=223530226]
+z_index = 1
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+offset_left = -12.785
+offset_top = -29.305
+offset_right = 1139.215
+offset_bottom = 618.695
+mouse_filter = 2
+texture = ExtResource("2_phbgv")
+expand_mode = 2
+stretch_mode = 6

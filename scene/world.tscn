@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://b0b4v4ciybock" path="res://assets/ui/healthbar/healthbarUnder.png" id="12_qfj6m"]
 [ext_resource type="Texture2D" uid="uid://cb5j2kpjdgvkd" path="res://assets/ui/healthbar/healthbarTop.png" id="13_n02kn"]
 [ext_resource type="Texture2D" uid="uid://bhf7jgjhfmytv" path="res://assets/ui/healthbar/healthbarMiddle.png" id="14_puhxk"]
+[ext_resource type="Texture2D" uid="uid://xc60cujhvmk5" path="res://assets/ui/shop/coins_ui.png" id="22_vme25"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_gbfbk"]
 
@@ -2239,6 +2240,7 @@ transform = Transform3D(0.9999999, 0, 0, 2.9802319e-08, 0.70710677, 0.70710677, 
 texture = ExtResource("8_qfj6m")
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=387867698]
+visible = false
 collision_mask = 0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=350166391]
@@ -2740,6 +2742,37 @@ scale = Vector2(0.415, 0.415)
 texture_under = ExtResource("12_qfj6m")
 texture_over = ExtResource("13_n02kn")
 texture_progress = ExtResource("14_puhxk")
+
+[node name="GoldDisplay" type="Control" parent="." unique_id=853785797]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(0.54, 0.54)
+
+[node name="GoldLabel" type="Label" parent="GoldDisplay" unique_id=1869866473]
+z_index = 2
+layout_mode = 1
+offset_left = 109.0
+offset_top = 52.0
+offset_right = 187.0
+offset_bottom = 102.0
+theme_override_font_sizes/font_size = 30
+text = "x999"
+vertical_alignment = 1
+
+[node name="GoldCountUI" type="TextureRect" parent="GoldDisplay" unique_id=1755416605]
+z_index = 1
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+offset_left = -12.785
+offset_top = -29.305
+offset_right = 1139.215
+offset_bottom = 618.695
+mouse_filter = 2
+texture = ExtResource("22_vme25")
+expand_mode = 2
+stretch_mode = 6
 
 [connection signal="health_changed" from="Goose" to="UI Canvas" method="_on_goose_health_changed"]
 [connection signal="timeout" from="Enemy Spawner/Timer" to="Enemy Spawner" method="_on_timer_timeout"]
