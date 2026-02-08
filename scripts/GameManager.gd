@@ -4,6 +4,8 @@ extends Node
 var raw_normal = preload("res://assets/cursor.png")
 var raw_click = preload("res://assets/cursor_click.png")
 
+var has_started_intro = false
+
 # 2. Variables to hold the new "Small" versions
 var cursor_normal: Texture2D
 var cursor_click: Texture2D
