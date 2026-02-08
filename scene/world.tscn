@@ -27,6 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://6qiifxc2xc2" path="res://assets/Freeze_ability.png" id="20_puhxk"]
 [ext_resource type="PackedScene" uid="uid://d4eo4uytpnwst" path="res://scene/shop.tscn" id="22_vme25"]
 [ext_resource type="Texture2D" uid="uid://xc60cujhvmk5" path="res://assets/ui/shop/coins_ui.png" id="25_n02kn"]
+[ext_resource type="Script" uid="uid://dfitj6ylrcsm7" path="res://scripts/gold_label.gd" id="26_x11oh"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_gbfbk"]
 
@@ -2762,8 +2763,8 @@ offset_top = 52.0
 offset_right = 187.0
 offset_bottom = 102.0
 theme_override_font_sizes/font_size = 30
-text = "x999"
 vertical_alignment = 1
+script = ExtResource("26_x11oh")
 
 [node name="GoldCountUI" type="TextureRect" parent="GoldDisplay" unique_id=170779526]
 z_index = 1
