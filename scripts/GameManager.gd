@@ -81,7 +81,6 @@ func reset_game():
 	items.clear()
 	current_kills = 0
 	calculate_target()
-	get_tree().change_scene_to_file("res://scene/world.tscn")
 
 func calculate_target():
 	kills_required = level_index * 5

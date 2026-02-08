@@ -390,8 +390,12 @@ func apply_freeze(duration):
 	anim_player.play()
 	
 func _die():
-	level_complete()
-
+	var messageFirstLoad = "YOU DIED!"
+	show_alert(messageFirstLoad, 2.0)
+	get_tree().paused = true
+	await get_tree().create_timer(2.0).timeout
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://scene/main_menu.tscn")
 
 ### TODO: Needs to be put in a WorldController.gd
 func level_complete():
