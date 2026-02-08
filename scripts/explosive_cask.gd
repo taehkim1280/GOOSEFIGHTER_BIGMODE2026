@@ -1,82 +1,71 @@
 extends Node3D
 
 const RADIUS = 3.0
-const KNOCKBACK_STRENGTH = 25.0
-const VISUAL_OVERSIZE = 1.1 # Matches the * 1.1 in the tween
+const DAMAGE = 25.0
+const VISUAL_OVERSIZE = 1.1 
 
 @export var projectile_scene: PackedScene
 @onready var mesh = $MeshInstance3D
 
+# --- 1. SETUP (Copied exactly from PetrifyZone) ---
 func set_as_faint(is_faint: bool):
-	# 1. Setup Material (Exact same logic as PetrifyZone)
-	if mesh.material_override == null:
-		mesh.material_override = StandardMaterial3D.new()
+	# Match the transparency logic
+	mesh.transparency = 0.5
+	scale = Vector3(RADIUS, 1, RADIUS)
 
-	var mat = mesh.material_override
-	mat.albedo_color = Color(0, 1, 1, 0.5)
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.render_priority = 1 # Draw on top of floor
+	# Ensure the mesh uses a unique material (Logic from Petrify)
+	if mesh.get_surface_override_material(0) == null:
+		mesh.set_surface_override_material(0, StandardMaterial3D.new())
 
-	# 2. Set Initial Scale
-	if is_faint:
-		scale = Vector3(RADIUS, 1, RADIUS)
-		mesh.transparency = 0.5
+	var mat = mesh.get_surface_override_material(0)
+	if mat:
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		# I changed color to ORANGE to distinguish it from Petrify (Blue)
+		mat.albedo_color = Color(0, 1, 1, 0.5) 
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.render_priority = 1 # Draw on top of floor
 
+# --- 2. CAST SEQUENCE (Copied from PetrifyZone + Projectile) ---
 func start_charge_sequence(pos: Vector3):
 	global_position = pos
 	
+	# Unique Cask Logic: Launch the barrel visual
 	_launch_projectile_visual()
 
+	# Visual "Cast Time" (Matches Petrify Tween)
 	mesh.transparency = 0.2
-	
-	# Visual "Cast Time" (wait 0.5s before exploding)
 	var tween = create_tween()
-	# Scale animation: Grow by 10% over 0.5s
 	tween.tween_property(self, "scale", scale * VISUAL_OVERSIZE, 0.5).set_trans(Tween.TRANS_QUAD)
 	tween.tween_callback(explode)
 
+# --- 3. EXPLOSION (Unique to Cask) ---
 func explode():
-	# 1. Damage Enemies
+	# Damage Enemies (Instead of Freezing them)
 	var enemies = get_tree().get_nodes_in_group("enemies")
 	
-	# Calculate effective hit radius (Visual Size + Enemy Size Buffer)
+	# Calculate hit radius (Visual Size + slight buffer)
 	var hit_threshold = (RADIUS * VISUAL_OVERSIZE) + 0.5
 	
 	for enemy in enemies:
 		if enemy.has_method("take_damage"):
-			# Check distance
-			var dist = _get_flat_distance(enemy.global_position)
+			# Check flat distance (ignoring height)
+			var diff = enemy.global_position - global_position
+			diff.y = 0
 			
-			if dist <= hit_threshold:
-				enemy.take_damage(25.0, global_position)
+			if diff.length() <= hit_threshold:
+				enemy.take_damage(DAMAGE, global_position)
 
-	# 2. Camera Shake
+	# Camera Shake
 	var cam = get_viewport().get_camera_3d()
 	if cam and cam.has_method("add_shake"):
 		cam.add_shake(0.4)
 	
-	# 3. Cleanup
 	queue_free()
 
-# --- Helper Functions ---
-
+# --- Helpers ---
 func _launch_projectile_visual():
-	# This part is unique to Cask (the barrel flying through air)
-	# We keep it separate so it doesn't clutter the main animation flow
 	var player = get_tree().get_first_node_in_group("player")
 	if player and projectile_scene:
 		var proj = projectile_scene.instantiate()
 		get_parent().add_child(proj)
 		proj.launch(player.global_position, global_position, 0.5)
-		
-		# Hide the main indicator mesh while projectile flies?
-		# If you want it exactly like Petrify, maybe keep it visible but faint.
-		# mesh.transparency = 1.0 
-	else:
-		pass
-
-func _get_flat_distance(target_pos: Vector3) -> float:
-	var diff = target_pos - global_position
-	diff.y = 0
-	return diff.length()

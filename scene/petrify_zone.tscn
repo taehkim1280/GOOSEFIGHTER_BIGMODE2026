@@ -7,9 +7,21 @@ top_radius = 1.0
 bottom_radius = 1.0
 height = 0.01
 
+[sub_resource type="Gradient" id="Gradient_hy2rs"]
+offsets = PackedFloat32Array(0.5955882, 1)
+colors = PackedColorArray(1, 1, 1, 0, 0.1254902, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jvoyt"]
+gradient = SubResource("Gradient_hy2rs")
+fill = 1
+fill_from = Vector2(0.25, 0.75)
+fill_to = Vector2(0.4, 0.5)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u44ud"]
 transparency = 1
-albedo_color = Color(0.5568628, 1, 1, 0.42745098)
+shading_mode = 0
+albedo_color = Color(0.5568628, 1, 1, 1)
+albedo_texture = SubResource("GradientTexture2D_jvoyt")
 
 [node name="Node3D" type="Node3D" unique_id=769668464]
 script = ExtResource("1_snful")

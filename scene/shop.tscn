@@ -76,3 +76,14 @@ mouse_filter = 2
 texture = ExtResource("2_phbgv")
 expand_mode = 2
 stretch_mode = 6
+
+[node name="CloseShop" type="Button" parent="." unique_id=1366242153]
+process_mode = 3
+layout_mode = 0
+offset_left = 461.0
+offset_top = 589.0
+offset_right = 554.0
+offset_bottom = 620.0
+text = "Close Shop"
+
+[connection signal="pressed" from="CloseShop" to="." method="_on_next_level_pressed"]

@@ -309,10 +309,11 @@ func apply_knockback(force: Vector3):
 	knockback_velocity = force
 	
 func die():
-	print("ENEMY SHATTERED! Attempting to spawn VFX...")
+	# print("ENEMY SHATTERED! Attempting to spawn VFX...")
+	GameManager.add_kill(5)
 
 	if death_vfx_scene:
-		print("- VFX Scene is assigned. Instantiating...")
+		# print("- VFX Scene is assigned. Instantiating...")
 		var vfx = death_vfx_scene.instantiate()
 		# Add to the WORLD (get_parent), not the Enemy, or it will vanish with the enemy
 		get_parent().add_child(vfx)
