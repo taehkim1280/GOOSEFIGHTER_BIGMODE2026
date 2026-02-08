@@ -52,6 +52,11 @@ func _ready():
 	call_deferred("emit_signal", "health_changed", 100.0*current_health/GameManager.max_health)
 
 func _process(_delta):
+	if Input.is_key_pressed(KEY_P):
+		take_damage(110)
+		return
+
+
 	var mouse_pos = get_mouse_3d_position()
 	
 	if mouse_pos == Vector3.ZERO:

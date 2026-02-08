@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://daonprotxr3xd" path="res://scripts/shop.gd" id="1_viryw"]
 [ext_resource type="Texture2D" uid="uid://dv1bvneo4s7ix" path="res://assets/ui/shop/SHOPBASE.jpg" id="2_4p3p6"]
+[ext_resource type="Texture2D" uid="uid://xc60cujhvmk5" path="res://assets/ui/shop/coins_ui.png" id="2_phbgv"]
+[ext_resource type="PackedScene" uid="uid://bnuwgixc2jsu1" path="res://scene/shop_item.tscn" id="2_uyq3k"]
 
 [node name="Shop" type="Control" unique_id=1215132281]
 layout_mode = 3
@@ -12,25 +14,60 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_viryw")
 
-[node name="Button2" type="Button" parent="." unique_id=2106477184]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-
-[node name="Button" type="Button" parent="." unique_id=1382234119]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-
 [node name="GoldLabel" type="Label" parent="." unique_id=1890007563]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+z_index = 2
+layout_mode = 1
+offset_left = 109.0
+offset_top = 52.0
+offset_right = 187.0
+offset_bottom = 102.0
+theme_override_font_sizes/font_size = 30
+text = "x999"
+vertical_alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=1922896419]
+[node name="GoldCountUI" type="TextureRect" parent="." unique_id=223530226]
+z_index = 1
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+offset_left = -12.785
+offset_top = -29.305
+offset_right = 1139.215
+offset_bottom = 618.695
+mouse_filter = 2
+texture = ExtResource("2_phbgv")
+expand_mode = 2
+stretch_mode = 6
+
+[node name="ShopBackground" type="TextureRect" parent="." unique_id=1922896419]
 layout_mode = 0
 offset_right = 1152.0
 offset_bottom = 648.0
+mouse_filter = 2
 texture = ExtResource("2_4p3p6")
 expand_mode = 2
 stretch_mode = 6
+
+[node name="listings" type="VBoxContainer" parent="." unique_id=1894515942]
+z_index = 5
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -386.0
+offset_top = -180.0
+offset_right = 240.0
+offset_bottom = 162.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 21
+
+[node name="ShopItem1" parent="listings" unique_id=1645340263 instance=ExtResource("2_uyq3k")]
+layout_mode = 2
+
+[node name="ShopItem2" parent="listings" unique_id=659526256 instance=ExtResource("2_uyq3k")]
+layout_mode = 2
+
+[node name="ShopItem3" parent="listings" unique_id=1716636310 instance=ExtResource("2_uyq3k")]
+layout_mode = 2

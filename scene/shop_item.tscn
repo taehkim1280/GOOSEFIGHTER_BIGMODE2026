@@ -1,0 +1,137 @@
+[gd_scene format=3 uid="uid://bnuwgixc2jsu1"]
+
+[ext_resource type="Texture2D" uid="uid://cfvem4j6nggna" path="res://assets/ui/shop/coinsIcon.png" id="1_opdny"]
+[ext_resource type="Script" uid="uid://b5pxrjx7dcioy" path="res://scripts/shop_item.gd" id="1_tmc7m"]
+[ext_resource type="Texture2D" uid="uid://lfr5r36ob56v" path="res://assets/ui/shop/paper.png" id="2_2htjv"]
+[ext_resource type="Texture2D" uid="uid://dicjmp5g4xj3o" path="res://assets/ui/icons/snowball_icon.png" id="3_vrqv6"]
+[ext_resource type="Texture2D" uid="uid://bbxphr7g052ol" path="res://assets/ui/icons/hat.png" id="4_qc1qn"]
+[ext_resource type="Texture2D" uid="uid://dk7knnwe5owdx" path="res://assets/ui/icons/helmet.png" id="5_tmc7m"]
+[ext_resource type="Texture2D" uid="uid://bunanpdwymx0g" path="res://assets/ui/icons/hockeyglove.png" id="6_p0wq8"]
+[ext_resource type="Texture2D" uid="uid://pmg40dlxgqam" path="res://assets/ui/icons/mitten.png" id="7_lbqbv"]
+[ext_resource type="Texture2D" uid="uid://ddijuifgnbj6u" path="res://assets/ui/icons/tuque.png" id="8_eopft"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_opdny"]
+
+[node name="ShopItem1" type="Button" unique_id=1645340263]
+custom_minimum_size = Vector2(618.615, 91.625)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_focus_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0)
+icon = SubResource("PlaceholderTexture2D_opdny")
+flat = true
+icon_alignment = 1
+script = ExtResource("1_tmc7m")
+
+[node name="GoldLabel2" type="Label" parent="." unique_id=132752246]
+z_index = 2
+layout_mode = 1
+offset_left = 527.0
+offset_top = 20.0
+offset_right = 605.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "x999"
+vertical_alignment = 1
+
+[node name="goldicon" type="TextureRect" parent="." unique_id=636537145]
+z_index = 9
+layout_mode = 0
+offset_left = -334.0
+offset_top = -184.0
+offset_right = 1014.0
+offset_bottom = 655.0
+mouse_filter = 2
+texture = ExtResource("1_opdny")
+expand_mode = 2
+
+[node name="banner" type="TextureRect" parent="." unique_id=923661170]
+layout_mode = 0
+offset_left = -204.0
+offset_top = -106.000015
+offset_right = 967.0
+offset_bottom = 616.0
+scale = Vector2(1, 0.75999963)
+mouse_filter = 2
+texture = ExtResource("2_2htjv")
+expand_mode = 2
+
+[node name="snowballicon" type="TextureRect" parent="." unique_id=1235760896]
+layout_mode = 0
+offset_left = -193.0
+offset_top = -118.0
+offset_right = -153.0
+offset_bottom = -78.0
+scale = Vector2(26.139935, 14.922358)
+mouse_filter = 2
+texture = ExtResource("3_vrqv6")
+expand_mode = 2
+
+[node name="haticon" type="TextureRect" parent="." unique_id=1647706313]
+layout_mode = 0
+offset_left = -192.0
+offset_top = -267.0
+offset_right = -152.0
+offset_bottom = -227.0
+scale = Vector2(26.139935, 14.922358)
+mouse_filter = 2
+texture = ExtResource("4_qc1qn")
+expand_mode = 2
+
+[node name="helmeticon" type="TextureRect" parent="." unique_id=634565633]
+layout_mode = 0
+offset_left = -192.0
+offset_top = -267.0
+offset_right = -152.0
+offset_bottom = -227.0
+scale = Vector2(26.139935, 14.922358)
+mouse_filter = 2
+texture = ExtResource("5_tmc7m")
+expand_mode = 2
+
+[node name="hockeygloveicon" type="TextureRect" parent="." unique_id=1486257808]
+layout_mode = 0
+offset_left = -192.0
+offset_top = -267.0
+offset_right = -152.0
+offset_bottom = -227.0
+scale = Vector2(26.139935, 14.922358)
+mouse_filter = 2
+texture = ExtResource("6_p0wq8")
+expand_mode = 2
+
+[node name="mittenicon" type="TextureRect" parent="." unique_id=1025160142]
+layout_mode = 0
+offset_left = -192.0
+offset_top = -267.0
+offset_right = -152.0
+offset_bottom = -227.0
+scale = Vector2(26.139935, 14.922358)
+mouse_filter = 2
+texture = ExtResource("7_lbqbv")
+expand_mode = 2
+
+[node name="tuqueicon" type="TextureRect" parent="." unique_id=1300182182]
+layout_mode = 0
+offset_left = -192.0
+offset_top = -267.0
+offset_right = -152.0
+offset_bottom = -227.0
+scale = Vector2(26.139935, 14.922358)
+mouse_filter = 2
+texture = ExtResource("8_eopft")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="." unique_id=2065574284]
+layout_mode = 0
+offset_left = 99.0
+offset_top = 11.0
+offset_right = 443.0
+offset_bottom = 80.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "SNOWBALL"
+horizontal_alignment = 1
