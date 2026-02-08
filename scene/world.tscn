@@ -21,6 +21,9 @@
 [ext_resource type="Texture2D" uid="uid://b0b4v4ciybock" path="res://assets/ui/healthbar/healthbarUnder.png" id="12_qfj6m"]
 [ext_resource type="Texture2D" uid="uid://cb5j2kpjdgvkd" path="res://assets/ui/healthbar/healthbarTop.png" id="13_n02kn"]
 [ext_resource type="Texture2D" uid="uid://bhf7jgjhfmytv" path="res://assets/ui/healthbar/healthbarMiddle.png" id="14_puhxk"]
+[ext_resource type="Texture2D" uid="uid://bejnq51oneshd" path="res://assets/Bomb_ability.png" id="16_qfj6m"]
+[ext_resource type="Texture2D" uid="uid://b1dv56uapqot3" path="res://assets/Dash_Abiltiy.png" id="18_n02kn"]
+[ext_resource type="Texture2D" uid="uid://6qiifxc2xc2" path="res://assets/Freeze_ability.png" id="20_puhxk"]
 [ext_resource type="PackedScene" uid="uid://d4eo4uytpnwst" path="res://scene/shop.tscn" id="22_vme25"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_gbfbk"]
@@ -2156,21 +2159,6 @@ sky = SubResource("Sky_tlwt5")
 
 [sub_resource type="GDScript" id="GDScript_036b0"]
 
-[sub_resource type="Gradient" id="Gradient_wse8f"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_ic0uy"]
-gradient = SubResource("Gradient_wse8f")
-fill_to = Vector2(1, 1)
-
-[sub_resource type="Gradient" id="Gradient_k3n1d"]
-offsets = PackedFloat32Array(0.012987013, 0.9805195)
-colors = PackedColorArray(1, 1, 1, 1, 0.78431374, 0.78431374, 0.78431374, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_2o6r5"]
-gradient = SubResource("Gradient_k3n1d")
-fill_to = Vector2(1, 1)
-
 [node name="World" type="Node3D" unique_id=74445810]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1346949853]
@@ -2694,27 +2682,36 @@ grow_horizontal = 2
 grow_vertical = 0
 
 [node name="BombaBar" type="TextureProgressBar" parent="UI Canvas/Control/HBoxContainer" unique_id=1122265755]
+custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 rounded = true
 fill_mode = 4
-texture_under = SubResource("GradientTexture2D_ic0uy")
-texture_progress = SubResource("GradientTexture2D_2o6r5")
+nine_patch_stretch = true
+texture_under = ExtResource("16_qfj6m")
+texture_progress = ExtResource("16_qfj6m")
+tint_progress = Color(0.8776157, 0.8776158, 0.8776157, 1)
 script = ExtResource("10_oiypb")
 
 [node name="DashBar" type="TextureProgressBar" parent="UI Canvas/Control/HBoxContainer" unique_id=2109863386]
+custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 rounded = true
 fill_mode = 4
-texture_under = SubResource("GradientTexture2D_ic0uy")
-texture_progress = SubResource("GradientTexture2D_2o6r5")
+nine_patch_stretch = true
+texture_under = ExtResource("18_n02kn")
+texture_progress = ExtResource("18_n02kn")
+tint_progress = Color(0.8784314, 0.8784314, 0.8784314, 1)
 script = ExtResource("11_a81yy")
 
 [node name="FreezeBar" type="TextureProgressBar" parent="UI Canvas/Control/HBoxContainer" unique_id=2008683786]
+custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 rounded = true
 fill_mode = 4
-texture_under = SubResource("GradientTexture2D_ic0uy")
-texture_progress = SubResource("GradientTexture2D_2o6r5")
+nine_patch_stretch = true
+texture_under = ExtResource("20_puhxk")
+texture_progress = ExtResource("20_puhxk")
+tint_progress = Color(0.8784314, 0.8784314, 0.8784314, 1)
 script = ExtResource("12_a0bac")
 
 [node name="TopBar" type="Control" parent="UI Canvas" unique_id=364701054]
@@ -2743,6 +2740,7 @@ texture_over = ExtResource("13_n02kn")
 texture_progress = ExtResource("14_puhxk")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2017987913]
+visible = false
 
 [node name="Shop" parent="CanvasLayer" unique_id=1215132281 instance=ExtResource("22_vme25")]
 
