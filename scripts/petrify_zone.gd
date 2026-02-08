@@ -31,6 +31,7 @@ func start_cast_sequence(pos: Vector3):
 
 func activate_petrify():
 	# 1. Freeze Enemies
+	SoundManager.play_sfx("freeze")
 	var enemies = get_tree().get_nodes_in_group("enemies")
 	for entity in enemies:
 		# Check distance using the RADIUS constant

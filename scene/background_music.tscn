@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://drae1f7gujrdu"]
+
+[ext_resource type="AudioStream" uid="uid://fo11avwmwpph" path="res://assets/goose_song.mp3" id="1_g1dms"]
+[ext_resource type="Script" uid="uid://c4mrephjdrg2b" path="res://scripts/background_music.gd" id="2_p2hai"]
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" unique_id=2067222245]
+process_mode = 3
+stream = ExtResource("1_g1dms")
+volume_db = -10.0
+autoplay = true
+script = ExtResource("2_p2hai")

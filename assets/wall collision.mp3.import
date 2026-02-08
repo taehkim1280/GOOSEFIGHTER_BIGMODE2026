@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://di25tsx058o1u"
+path="res://.godot/imported/wall collision.mp3-db4a6d3f40cb57d23c37aef943e12200.mp3str"
+
+[deps]
+
+source_file="res://assets/wall collision.mp3"
+dest_files=["res://.godot/imported/wall collision.mp3-db4a6d3f40cb57d23c37aef943e12200.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

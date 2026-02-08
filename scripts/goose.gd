@@ -228,6 +228,7 @@ func start_dash():
 		look_at(global_position + dash_direction, Vector3.UP)
 
 	is_dashing = true
+	SoundManager.play_sfx("dash")
 	is_invincible = true;
 	dash_cooldown_timer.start(DASH_COOLDOWN)
 	dash_duration.start(0.2) # dash lasts 0.4 seconds
@@ -317,6 +318,11 @@ func attack_towards_mouse():
 				# 1. Apply Damage (Accumulates percentage)
 				# enemy.take_damage(DAMAGE_PRIMARY, global_position, true)
 				enemy.take_damage(GameManager.player_damage, global_position, true)
+
+				if enemy.is_frozen:
+					SoundManager.play_sfx("frozen_hit")
+				else:
+					SoundManager.play_sfx("stick_hit", randf_range(0.9, 1.1)) # Normal hit
 				
 				# 2. Apply Freeze Stack (New Mechanic)
 				if enemy.has_method("apply_freeze_stack"):

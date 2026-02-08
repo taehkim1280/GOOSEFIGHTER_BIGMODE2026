@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bvihel2b5j4r4"
+path="res://.godot/imported/stick hit.mp3-b704c9f83779e931e3e7c7bcee552dac.mp3str"
+
+[deps]
+
+source_file="res://assets/stick hit.mp3"
+dest_files=["res://.godot/imported/stick hit.mp3-b704c9f83779e931e3e7c7bcee552dac.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

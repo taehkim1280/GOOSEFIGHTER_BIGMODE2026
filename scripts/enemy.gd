@@ -131,6 +131,7 @@ func _physics_process(delta):
 				die() # INSTANT KILL
 			elif knockback_velocity.length() > 5.0:
 				# Wall hit, but not enough damage stored to kill
+				SoundManager.play_sfx("wall_hit")
 				take_damage(10.0, Vector3.ZERO, false) # Add a bit more damage
 			
 		return # SKIP NORMAL AI MOVEMENT

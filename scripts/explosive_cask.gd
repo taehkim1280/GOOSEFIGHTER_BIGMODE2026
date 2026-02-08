@@ -55,6 +55,7 @@ func explode():
 			if diff.length() <= hit_threshold:
 				enemy.take_damage(DAMAGE, global_position)
 
+	SoundManager.play_sfx("snow_bomb")
 	# Camera Shake
 	var cam = get_viewport().get_camera_3d()
 	if cam and cam.has_method("add_shake"):

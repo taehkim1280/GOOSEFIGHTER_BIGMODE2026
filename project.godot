@@ -18,6 +18,8 @@ config/icon="res://assets/icon.svg"
 [autoload]
 
 GameManager="*res://scripts/GameManager.gd"
+Music="*uid://drae1f7gujrdu"
+SoundManager="*uid://cvj4akt6qyvg3"
 
 [input]
 
