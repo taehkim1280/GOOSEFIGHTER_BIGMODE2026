@@ -1,7 +1,6 @@
 [gd_scene format=4 uid="uid://crmist5ct07gu"]
 
 [ext_resource type="Script" uid="uid://bsyfdo60t10pr" path="res://scripts/camera_3d.gd" id="1_bqa5m"]
-[ext_resource type="Texture2D" uid="uid://xuup2ey3xe6" path="res://assets/arena_ortho.jpg" id="2_a0bac"]
 [ext_resource type="Texture2D" uid="uid://b71hk0mw4p08u" path="res://assets/ARENA.png" id="2_a7xoa"]
 [ext_resource type="Texture2D" uid="uid://cuhs3t3jge0iu" path="res://assets/MIDGROUND.png" id="3_hnm4a"]
 [ext_resource type="Script" uid="uid://bfmcigtn3wt52" path="res://scripts/goose.gd" id="3_tmyho"]
@@ -21,23 +20,17 @@
 [ext_resource type="Texture2D" uid="uid://cb5j2kpjdgvkd" path="res://assets/ui/healthbar/healthbarTop.png" id="13_n02kn"]
 [ext_resource type="Texture2D" uid="uid://b6iqiok8t5e07" path="res://assets/goosemodels/goose1textured_goose1 (1)PAINT2_Material.001_BaseColor.png" id="13_puhxk"]
 [ext_resource type="Texture2D" uid="uid://bhf7jgjhfmytv" path="res://assets/ui/healthbar/healthbarMiddle.png" id="14_puhxk"]
-[ext_resource type="PackedScene" path="res://scene/enemy_white.tscn" id="15_7h02s"]
-[ext_resource type="PackedScene" path="res://scene/enemy_grey.tscn" id="16_fb6u6"]
-[ext_resource type="Script" uid="uid://cwjgepq8pv85c" path="res://scripts/control.gd" id="16_puhxk"]
+[ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://scene/enemy_white.tscn" id="15_7h02s"]
+[ext_resource type="PackedScene" uid="uid://qc7kb4xat8j" path="res://scene/enemy_grey.tscn" id="16_fb6u6"]
+[ext_resource type="Script" path="res://scripts/control.gd" id="16_puhxk"]
 [ext_resource type="Texture2D" uid="uid://bejnq51oneshd" path="res://assets/Bomb_ability.png" id="16_qfj6m"]
-[ext_resource type="PackedScene" path="res://scene/enemy_brown.tscn" id="17_spjrp"]
+[ext_resource type="PackedScene" uid="uid://cnfxnmhstwb72" path="res://scene/enemy_brown.tscn" id="17_spjrp"]
 [ext_resource type="Texture2D" uid="uid://b1dv56uapqot3" path="res://assets/Dash_Abiltiy.png" id="18_n02kn"]
 [ext_resource type="Texture2D" uid="uid://6qiifxc2xc2" path="res://assets/Freeze_ability.png" id="20_puhxk"]
 [ext_resource type="LabelSettings" path="res://new_label_settings.tres" id="22_13g4d"]
 [ext_resource type="PackedScene" uid="uid://d4eo4uytpnwst" path="res://scene/shop.tscn" id="22_vme25"]
 [ext_resource type="Texture2D" uid="uid://xc60cujhvmk5" path="res://assets/ui/shop/coins_ui.png" id="25_n02kn"]
 [ext_resource type="Script" uid="uid://dfitj6ylrcsm7" path="res://scripts/gold_label.gd" id="26_x11oh"]
-
-[sub_resource type="QuadMesh" id="QuadMesh_gbfbk"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ioo17"]
-shading_mode = 0
-albedo_texture = ExtResource("2_a0bac")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_fj7yv"]
 
@@ -2180,12 +2173,6 @@ script = ExtResource("1_bqa5m")
 
 [node name="Artwork" type="Node3D" parent="." unique_id=1350863833]
 transform = Transform3D(0.9999999, 0, 0, 0, 1, 0, 0, 0, 0.99999994, -5, -5, -5)
-
-[node name="BackgroundOLD" type="MeshInstance3D" parent="Artwork" unique_id=1945786634]
-transform = Transform3D(50, 0, 0, 0, 19.8895, 1.8441344, 0, -19.8895, 1.8441344, 0, 0, 0)
-visible = false
-mesh = SubResource("QuadMesh_gbfbk")
-surface_material_override/0 = SubResource("StandardMaterial3D_ioo17")
 
 [node name="background" type="Node3D" parent="Artwork" unique_id=1086091115]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)
