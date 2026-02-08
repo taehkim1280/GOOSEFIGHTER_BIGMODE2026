@@ -348,47 +348,57 @@ func get_collider_radius(col_node: CollisionShape3D) -> float:
 	return shape.radius * node_scale
 
 func spawn_telegraph(pos: Vector3, radius: float, duration: float) -> void:
-	# Create Visual Mesh
+	# 1. Create Meshes
 	var indicator = MeshInstance3D.new()
 	var indicator2 = MeshInstance3D.new()
 	var telegraph_mesh = CylinderMesh.new()
-	
+
 	telegraph_mesh.top_radius = radius
 	telegraph_mesh.bottom_radius = radius
 	telegraph_mesh.height = 0.05 
-	
+
 	indicator.mesh = telegraph_mesh
 	indicator2.mesh = telegraph_mesh
 
-	# Create Material (Semi-transparent Red)
+	# 2. Setup Material
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color = Color(1, 0, 0, 0.3) 
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-
 	mat.render_priority = 1
-	
+
 	indicator.material_override = mat
 	indicator2.material_override = mat
 
-	get_tree().root.add_child(indicator)
-	get_tree().root.add_child(indicator2)
-	
+	# --- CRITICAL FIX 1: Add to World, NOT Root ---
+	# Adding to 'get_parent()' puts it in the Level scene.
+	# When you change scenes (to Shop), these will be deleted automatically.
+	get_parent().add_child(indicator)
+	get_parent().add_child(indicator2)
+
 	indicator.global_position = pos
 	indicator2.global_position = pos
 	indicator.global_position.y = 0.05 
 	indicator2.global_position.y = 0.05 
 
-	# Animate
 	indicator.scale = Vector3(0, 1, 0) 
 	indicator2.scale = Vector3(1, 1, 1) 
 
-	var tween = create_tween()
+	# --- CRITICAL FIX 2: Create a Global Tween ---
+	# get_tree().create_tween() creates a tween attached to the SceneTree, not the Enemy.
+	# If the Enemy dies (queue_free), this tween KEEPS RUNNING.
+	var tween = get_tree().create_tween()
+
+	# We bind the tween to the indicator. If the scene changes and indicator is deleted,
+	# the tween stops automatically (preventing errors).
+	tween.bind_node(indicator) 
+
 	tween.tween_property(indicator, "scale", Vector3(1, 1, 1), duration).set_trans(Tween.TRANS_LINEAR)
 	tween.tween_callback(func():
-		indicator.queue_free()
-		indicator2.queue_free()
+		# Check validity just in case
+		if is_instance_valid(indicator): indicator.queue_free()
+		if is_instance_valid(indicator2): indicator2.queue_free()
 	)
 
 func setup_stun_bar():

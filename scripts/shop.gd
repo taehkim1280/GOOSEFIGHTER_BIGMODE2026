@@ -9,9 +9,9 @@ extends Control
 var shop_items = {
 	"snowball": { "name": "Snowball", "price": 20, "icon": "snowballicon" },
 	"hat": { "name": "Warm Hat", "price": 10, "icon": "haticon" },
-	"tuque": { "name": "Trapper Hat", "price": 15, "icon": "tuqueicon" },
+	# "tuque": { "name": "Trapper Hat", "price": 15, "icon": "tuqueicon" },
 	"helmet": { "name": "Safety Helmet", "price": 50, "icon": "helmeticon" },
-	"mitten": { "name": "Mitten", "price": 15, "icon": "mittenicon" },
+	# "mitten": { "name": "Mitten", "price": 15, "icon": "mittenicon" },
 	"hockeyglove": { "name": "Hockey Gloves", "price": 40, "icon": "hockeygloveicon" }
 }
 

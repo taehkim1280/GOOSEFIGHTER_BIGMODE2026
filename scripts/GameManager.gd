@@ -77,6 +77,12 @@ func buy_item(item_data):
 		print("Not enough gold!")
 		return false 
 
+func has_item(item_name: String) -> bool:
+	for item in items:
+		if item["name"] == item_name:
+			return true
+	return false
+
 # --- TRANSITION TO NEXT LEVEL ---
 func next_level():
 	# 1. Increment Difficulty
