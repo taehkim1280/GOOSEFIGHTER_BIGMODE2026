@@ -67,6 +67,11 @@ func _process(_delta):
 		take_damage(110)
 		return
 
+	if Input.is_key_pressed(KEY_L):
+		GameManager.add_kill(100)
+		return
+
+
 
 	var mouse_pos = get_mouse_3d_position()
 	

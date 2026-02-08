@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://ukowhckjwvyw" path="res://assets/LEFT_FG.png" id="6_oiypb"]
 [ext_resource type="Texture2D" uid="uid://ykx2cgjc5e1c" path="res://assets/RIGHT_FG.png" id="7_a81yy"]
 [ext_resource type="Script" uid="uid://cpmpq25kjfyw0" path="res://scripts/enemy_spawner.gd" id="7_ol7uo"]
-[ext_resource type="PackedScene" uid="uid://dr8pwayknuq8k" path="res://scene/enemy.tscn" id="8_a7xoa"]
+[ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://scene/enemy.tscn" id="8_a7xoa"]
 [ext_resource type="Texture2D" uid="uid://ri614icgaknh" path="res://assets/ARCH.png" id="8_qfj6m"]
 [ext_resource type="Script" uid="uid://irod3awcgcod" path="res://scripts/ui_canvas.gd" id="9_vme25"]
 [ext_resource type="Script" uid="uid://ctai7npvyvnuw" path="res://scripts/texture_progress_bar.gd" id="10_oiypb"]
@@ -21,12 +21,11 @@
 [ext_resource type="Texture2D" uid="uid://b0b4v4ciybock" path="res://assets/ui/healthbar/healthbarUnder.png" id="12_qfj6m"]
 [ext_resource type="Texture2D" uid="uid://cb5j2kpjdgvkd" path="res://assets/ui/healthbar/healthbarTop.png" id="13_n02kn"]
 [ext_resource type="Texture2D" uid="uid://bhf7jgjhfmytv" path="res://assets/ui/healthbar/healthbarMiddle.png" id="14_puhxk"]
-
-[ext_resource type="Texture2D" uid="uid://xc60cujhvmk5" path="res://assets/ui/shop/coins_ui.png" id="22_vme25"]
 [ext_resource type="Texture2D" uid="uid://bejnq51oneshd" path="res://assets/Bomb_ability.png" id="16_qfj6m"]
 [ext_resource type="Texture2D" uid="uid://b1dv56uapqot3" path="res://assets/Dash_Abiltiy.png" id="18_n02kn"]
 [ext_resource type="Texture2D" uid="uid://6qiifxc2xc2" path="res://assets/Freeze_ability.png" id="20_puhxk"]
 [ext_resource type="PackedScene" uid="uid://d4eo4uytpnwst" path="res://scene/shop.tscn" id="22_vme25"]
+[ext_resource type="Texture2D" uid="uid://xc60cujhvmk5" path="res://assets/ui/shop/coins_ui.png" id="25_n02kn"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_gbfbk"]
 
@@ -47,16 +46,17 @@ shadow_to_opacity = true
 size = Vector3(20, 1, 20)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ic0uy"]
-size = Vector3(1, 5, 20)
+margin = 0.422
+size = Vector3(8.665, 5.82, 20)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gbfbk"]
-size = Vector3(20, 5, 1)
+size = Vector3(33.02, 5, 14.025)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ioo17"]
-size = Vector3(20, 5, 1)
+size = Vector3(30.89, 5, 12.22)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wse8f"]
-size = Vector3(1, 5, 20)
+size = Vector3(22.48, 5, 20)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_vme25"]
 radius = 2.2
@@ -2230,7 +2230,6 @@ transform = Transform3D(0.9999999, 0, 0, 2.9802319e-08, 0.70710677, 0.70710677, 
 texture = ExtResource("8_qfj6m")
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=387867698]
-visible = false
 collision_mask = 0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=350166391]
@@ -2249,6 +2248,7 @@ transform = Transform3D(1.5, 0, 0, 0, 10, 0, 0, 0, 1.5, 4, 0, 4)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.289706, 0, -2.9604907)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_NW" unique_id=1381141297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0890455, 0, 0)
 shape = SubResource("BoxShape3D_ic0uy")
 debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 
@@ -2256,6 +2256,7 @@ debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7375953, 0, -12.472292)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_NE" unique_id=122501096]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6.4795966)
 shape = SubResource("BoxShape3D_gbfbk")
 debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 
@@ -2263,6 +2264,7 @@ debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4206066, 0, 6.72596)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_SW" unique_id=283592288]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1254298, 0, 4.8792853)
 shape = SubResource("BoxShape3D_ioo17")
 debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 
@@ -2270,6 +2272,7 @@ debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5852327, 0, -3.0121772)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_SE" unique_id=683935770]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.211058, 0, 0)
 shape = SubResource("BoxShape3D_wse8f")
 debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 
@@ -2760,22 +2763,23 @@ theme_override_font_sizes/font_size = 30
 text = "x999"
 vertical_alignment = 1
 
-[node name="GoldCountUI" type="TextureRect" parent="GoldDisplay" unique_id=1755416605]
+[node name="GoldCountUI" type="TextureRect" parent="GoldDisplay" unique_id=170779526]
 z_index = 1
 custom_minimum_size = Vector2(10, 10)
-layout_mode = 1
+layout_mode = 0
 offset_left = -12.785
 offset_top = -29.305
 offset_right = 1139.215
 offset_bottom = 618.695
 mouse_filter = 2
-texture = ExtResource("22_vme25")
+texture = ExtResource("25_n02kn")
 expand_mode = 2
 stretch_mode = 6
+
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2017987913]
-visible = false
 
 [node name="Shop" parent="CanvasLayer" unique_id=1215132281 instance=ExtResource("22_vme25")]
+visible = false
 
 [connection signal="health_changed" from="Goose" to="UI Canvas" method="_on_goose_health_changed"]
 [connection signal="timeout" from="Enemy Spawner/Timer" to="Enemy Spawner" method="_on_timer_timeout"]

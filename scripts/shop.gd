@@ -54,7 +54,7 @@ func _on_item_bought(button_pressed):
 		pass
 
 func update_ui():
-	gold_label.text = "Gold: %s" % GameManager.gold
+	gold_label.text = "x%s" % GameManager.gold
 
 func stock_shop():
 	var available_keys = shop_items.keys()
