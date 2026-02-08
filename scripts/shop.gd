@@ -11,7 +11,7 @@ var shop_items = {
 	"hat": { "name": "Warm Hat", "price": 10, "icon": "haticon" },
 	"tuque": { "name": "Trapper Hat", "price": 15, "icon": "tuqueicon" },
 	"helmet": { "name": "Safety Helmet", "price": 50, "icon": "helmeticon" },
-	"mitten": { "name": "Mitten", "price": 15, "icon": "mittenicon" },
+	# "mitten": { "name": "Mitten", "price": 15, "icon": "mittenicon" },
 	"hockeyglove": { "name": "Hockey Gloves", "price": 40, "icon": "hockeygloveicon" }
 }
 
@@ -63,6 +63,19 @@ func _on_item_bought(button_pressed):
 		button_pressed.disabled = true
 		button_pressed.modulate = Color(0.5, 0.5, 0.5) 
 		print("Bought: ", item_data["name"])
+
+		if item_key == "hockeyglove":
+			# Increase Max Health (Assuming standard is 100, +25 is a good upgrade)
+			GameManager.max_health += 25 
+			
+			# Heal the player by that amount so the new health chunk isn't empty
+			GameManager.current_health += 25 
+			
+			print("Max health increased! New Max: ", GameManager.max_health)
+			
+		elif item_key == "tuque":
+			GameManager.player_speed += 2.0 # Increase speed by 2
+			print("Speed increased! New Speed: ", GameManager.player_speed)
 	else:
 		# Optional: Shake animation or red flash for "Not enough gold"
 		pass

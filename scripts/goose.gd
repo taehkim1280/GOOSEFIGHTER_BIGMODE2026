@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 # --- Constants ---
-const SPEED = 7
+# const SPEED = 7
 const ATTACK_COOLDOWN_TIME = 0.3
 const BOMBA_COOLDOWN = 4.0
 const DASH_COOLDOWN = 0.5 
@@ -43,6 +43,7 @@ var buffered_input: String = ""
 const PETRIFY_COOLDOWN = 1.0
 var petrify_indicator: Node3D = null
 var is_frozen: bool = false # Player frozen state
+var speed = 7.0 # New variable
 
 
 # --- Onready Nodes ---
@@ -59,8 +60,17 @@ var is_frozen: bool = false # Player frozen state
 
 func _ready():
 	dash_hitbox.body_entered.connect(_on_dash_hitbox_body_entered)
+
+	# 1. Sync Health
 	current_health = GameManager.current_health
-	call_deferred("emit_signal", "health_changed", 100.0*current_health/GameManager.max_health)
+	speed = GameManager.player_speed
+	call_deferred("emit_signal", "health_changed", 100.0 * current_health / GameManager.max_health)
+
+	# 2. CHECK ITEMS (Sync Abilities)
+	# The names must match exactly what is in Shop.gd "name" field
+	can_snowball = GameManager.has_item("Snowball")      # Required for Explosive Cask
+	can_dash     = GameManager.has_item("Safety Helmet") # Required for Dash
+	can_petrify  = GameManager.has_item("Warm Hat")      # Required for Petrify
 
 func _process(_delta):
 	if Input.is_key_pressed(KEY_P):
@@ -126,13 +136,13 @@ func _physics_process(_delta: float) -> void:
 		attack_cooldown -= _delta
 
 	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
+		velocity.x = direction.x * speed
+		velocity.z = direction.z * speed
 		if not is_attacking:
 				look_at(position + direction, Vector3.UP)
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
+		velocity.x = move_toward(velocity.x, 0, speed)
+		velocity.z = move_toward(velocity.z, 0, speed)
 
 	# animation logic
 	# 1st priority is attack
@@ -149,25 +159,36 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 func _input(event):
+	# --- BASIC ATTACK (Always allowed) ---
 	if event.is_action_pressed("attack_primary"):
 		if is_dashing:
 			buffered_input = "attack_primary"
 		else:
 			attack_towards_mouse()
 
+	# --- EXPLOSIVE CASK (Needs Snowball) ---
 	if event.is_action_pressed("attack_explosive_cask"):
-		if is_dashing:
-			buffered_input = "attack_explosive_cask"
-		elif current_indicator == null:
-			spawn_explosion_sequence()
+		if not can_snowball:
+			print("You need a Snowball to do this!")
+		else:
+			if is_dashing:
+				buffered_input = "attack_explosive_cask"
+			elif current_indicator == null:
+				spawn_explosion_sequence()
 
+	# --- PETRIFY (Needs Warm Hat) ---
 	if event.is_action_pressed("ability_petrify"): 
-		# Only run if we aren't already aiming one
-		if petrify_indicator == null:
+		if not can_petrify:
+			print("You need a Warm Hat to do this!")
+		elif petrify_indicator == null:
 			spawn_petrify_sequence()
 
-	if event.is_action_pressed("dash") and not is_dashing and dash_cooldown_timer.is_stopped():
-		start_dash()
+	# --- DASH (Needs Safety Helmet) ---
+	if event.is_action_pressed("dash"):
+		if not can_dash:
+			print("You need a Safety Helmet to Dash!")
+		elif not is_dashing and dash_cooldown_timer.is_stopped():
+			start_dash()
 
 # --- Dash Mechanics ---
 
@@ -271,7 +292,8 @@ func attack_towards_mouse():
 			# Avoid hitting the same enemy twice in one frame (rare but possible)
 			if enemy.is_in_group("enemies") and enemy.has_method("take_damage"):
 				# 1. Apply Damage (Accumulates percentage)
-				enemy.take_damage(DAMAGE_PRIMARY, global_position, true)
+				# enemy.take_damage(DAMAGE_PRIMARY, global_position, true)
+				enemy.take_damage(GameManager.player_damage, global_position, true)
 				
 				# 2. Apply Freeze Stack (New Mechanic)
 				if enemy.has_method("apply_freeze_stack"):
