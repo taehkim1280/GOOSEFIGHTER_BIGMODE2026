@@ -142,7 +142,7 @@ func _physics_process(delta):
 	var final_velocity = Vector3.ZERO
 	is_being_knocked_back = knockback_velocity.length() > 1.5
 
-	if player and not is_being_knocked_back:
+	if not is_attacking and player and not is_being_knocked_back:
 		var dir = (player.global_position - global_position).normalized()
 		dir.y = 0
 		var chase_velocity = dir * SPEED

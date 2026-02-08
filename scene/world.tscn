@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://ukowhckjwvyw" path="res://assets/LEFT_FG.png" id="6_oiypb"]
 [ext_resource type="Texture2D" uid="uid://ykx2cgjc5e1c" path="res://assets/RIGHT_FG.png" id="7_a81yy"]
 [ext_resource type="Script" uid="uid://cpmpq25kjfyw0" path="res://scripts/enemy_spawner.gd" id="7_ol7uo"]
-[ext_resource type="PackedScene" uid="uid://dr8pwayknuq8k" path="res://scene/enemy.tscn" id="8_a7xoa"]
+[ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://scene/enemy.tscn" id="8_a7xoa"]
 [ext_resource type="Texture2D" uid="uid://ri614icgaknh" path="res://assets/ARCH.png" id="8_qfj6m"]
 [ext_resource type="Script" uid="uid://irod3awcgcod" path="res://scripts/ui_canvas.gd" id="9_vme25"]
 [ext_resource type="Script" uid="uid://ctai7npvyvnuw" path="res://scripts/texture_progress_bar.gd" id="10_oiypb"]
@@ -51,6 +51,8 @@ size = Vector3(20, 5, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wse8f"]
 size = Vector3(1, 5, 20)
+
+[sub_resource type="SphereMesh" id="SphereMesh_a7xoa"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_036b0"]
 
@@ -2161,20 +2163,16 @@ fill_to = Vector2(1, 1)
 [node name="World" type="Node3D" unique_id=74445810]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1346949853]
-transform = Transform3D(0.70710677, -0.40860704, 0.57709646, 0, 0.8161376, 0.5778577, -0.70710677, -0.40860704, 0.57709646, 13, 16, 13)
+transform = Transform3D(0.7071068, -0.40860704, 0.57709646, 0, 0.8161376, 0.5778577, -0.7071068, -0.40860704, 0.57709646, 39.138832, 41.370415, 39.138832)
 projection = 1
 fov = 56.5
 size = 14.0
 near = 0.296
-far = 165.35
+far = 554.11
 script = ExtResource("1_bqa5m")
 
 [node name="Artwork" type="Node3D" parent="." unique_id=1350863833]
-transform = Transform3D(0.7071067, 0, 0.70710677, 0, 1, 0, -0.7071067, 0, 0.70710677, -5, -5, -5)
-
-[node name="Arena" type="Sprite3D" parent="Artwork" unique_id=1502211373]
-transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0)
-texture = ExtResource("2_a7xoa")
+transform = Transform3D(0.9999999, 0, 0, 0, 1, 0, 0, 0, 0.99999994, -5, -5, -5)
 
 [node name="BackgroundOLD" type="MeshInstance3D" parent="Artwork" unique_id=1945786634]
 transform = Transform3D(50, 0, 0, 0, 19.8895, 1.8441344, 0, -19.8895, 1.8441344, 0, 0, 0)
@@ -2182,24 +2180,52 @@ visible = false
 mesh = SubResource("QuadMesh_gbfbk")
 surface_material_override/0 = SubResource("StandardMaterial3D_ioo17")
 
-[node name="Foreground" type="Sprite3D" parent="Artwork" unique_id=2095847956]
-transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 15.5, 15.5)
-texture = ExtResource("3_hnm4a")
+[node name="background" type="Node3D" parent="Artwork" unique_id=1086091115]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)
 
-[node name="Background" type="Sprite3D" parent="Artwork" unique_id=2131439926]
-transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, -1, -1)
+[node name="MOVETHISONE" type="Node3D" parent="Artwork/background" unique_id=313321230]
+transform = Transform3D(1, 0, 0, 0, 0.8161376, 0.5778576, 0, -0.5778576, 0.8161376, 0, -8.21933, -11.608577)
+
+[node name="Node3D" type="Node3D" parent="Artwork/background/MOVETHISONE" unique_id=1841931675]
+transform = Transform3D(1, 0, 0, 0, 0.8161376, -0.5778576, 0, 0.5778576, 0.8161376, 0, 0, 0)
+
+[node name="Background" type="Sprite3D" parent="Artwork/background/MOVETHISONE/Node3D" unique_id=2131439926]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.7071067, 0.7071067, 0, -1, -1)
 texture = ExtResource("5_vme25")
 
-[node name="FGLeft" type="Sprite3D" parent="Artwork" unique_id=881588485]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.70710677, 0.7071067, 0, -0.70710677, 0.7071067, 0, 17, 17)
+[node name="Arena" type="Sprite3D" parent="Artwork/background/MOVETHISONE/Node3D" unique_id=1502211373]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.7071067, 0.7071067, 0, 0, 0)
+texture = ExtResource("2_a7xoa")
+
+[node name="forground" type="Node3D" parent="Artwork" unique_id=1083532277]
+
+[node name="Node3D" type="Node3D" parent="Artwork/forground" unique_id=847143352]
+transform = Transform3D(-4.3711385e-08, -0.5778576, 0.8161376, 0, 0.8161376, 0.5778576, -0.99999994, 2.525896e-08, -3.5674507e-08, 0, 0, 0)
+
+[node name="Node3D" type="Node3D" parent="Artwork/forground/Node3D" unique_id=1587654920]
+transform = Transform3D(0.70710677, 0, -0.70710677, -0.40860704, 0.8161376, -0.40860704, 0.5770964, 0.5778576, 0.5770964, 0, 0, 0)
+rotation_order = 0
+
+[node name="MOVETHISONE" type="Node3D" parent="Artwork/forground/Node3D/Node3D" unique_id=673061666]
+transform = Transform3D(1, 0, 0, 0, 0.8161376, 0.5778576, 0, -0.5778576, 0.8161376, 0, 13.843561, 19.551964)
+
+[node name="Node3D" type="Node3D" parent="Artwork/forground/Node3D/Node3D/MOVETHISONE" unique_id=1317056075]
+transform = Transform3D(1, 0, 0, 0, 0.8161376, -0.5778576, 0, 0.5778576, 0.8161376, 0, 0, 0)
+
+[node name="Foreground" type="Sprite3D" parent="Artwork/forground/Node3D/Node3D/MOVETHISONE/Node3D" unique_id=2095847956]
+transform = Transform3D(0.9999999, -2.9802322e-08, 0, -1.7763568e-15, 0.7071067, 0.70710677, 0, -0.70710665, 0.7071066, 0, 15.499999, 15.499996)
+texture = ExtResource("3_hnm4a")
+
+[node name="FGLeft" type="Sprite3D" parent="Artwork/forground/Node3D/Node3D/MOVETHISONE/Node3D" unique_id=881588485]
+transform = Transform3D(0.9999999, -2.9802322e-08, -2.9802322e-08, -8.881784e-16, 0.7071067, 0.7071067, 0, -0.70710665, 0.7071066, 0, 17, 16.999996)
 texture = ExtResource("6_oiypb")
 
-[node name="FGRight" type="Sprite3D" parent="Artwork" unique_id=1703421328]
-transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 17, 17)
+[node name="FGRight" type="Sprite3D" parent="Artwork/forground/Node3D/Node3D/MOVETHISONE/Node3D" unique_id=1703421328]
+transform = Transform3D(0.9999999, -2.9802322e-08, 0, -1.7763568e-15, 0.7071067, 0.70710677, 0, -0.70710665, 0.7071066, 0, 17, 16.999996)
 texture = ExtResource("7_a81yy")
 
-[node name="Cave" type="Sprite3D" parent="Artwork" unique_id=1829818178]
-transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 12, 17)
+[node name="Cave" type="Sprite3D" parent="Artwork/forground/Node3D/Node3D/MOVETHISONE/Node3D" unique_id=1829818178]
+transform = Transform3D(0.9999999, 0, 0, 2.9802319e-08, 0.70710677, 0.70710677, 5.9604645e-08, -0.7071066, 0.7071066, 0, 12, 16.999998)
 texture = ExtResource("8_qfj6m")
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=387867698]
@@ -2218,36 +2244,48 @@ shape = SubResource("BoxShape3D_tlwt5")
 transform = Transform3D(1.5, 0, 0, 0, 10, 0, 0, 0, 1.5, 4, 0, 4)
 
 [node name="ArenaWall_NW" type="StaticBody3D" parent="Ground/ArenaContainer" unique_id=419707193]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.289706, 0, -2.9604907)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_NW" unique_id=1381141297]
-visible = false
 shape = SubResource("BoxShape3D_ic0uy")
 debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 
 [node name="ArenaWall_NE" type="StaticBody3D" parent="Ground/ArenaContainer" unique_id=1104342877]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7375953, 0, -12.472292)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_NE" unique_id=122501096]
 shape = SubResource("BoxShape3D_gbfbk")
 debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 
 [node name="ArenaWall_SW" type="StaticBody3D" parent="Ground/ArenaContainer" unique_id=2136304253]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4206066, 0, 6.72596)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_SW" unique_id=283592288]
-visible = false
 shape = SubResource("BoxShape3D_ioo17")
 debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
 
 [node name="ArenaWall_SE" type="StaticBody3D" parent="Ground/ArenaContainer" unique_id=1820963130]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5852327, 0, -3.0121772)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/ArenaContainer/ArenaWall_SE" unique_id=683935770]
-visible = false
 shape = SubResource("BoxShape3D_wse8f")
 debug_color = Color(0.92156863, 0.18039216, 0.53333336, 0.9843137)
+
+[node name="bottombound" type="MeshInstance3D" parent="Ground" unique_id=1808558080]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.134802, 0.627, -14.230034)
+mesh = SubResource("SphereMesh_a7xoa")
+
+[node name="bottombound2" type="MeshInstance3D" parent="Ground" unique_id=975123334]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.967184, 0.627, -10.745161)
+mesh = SubResource("SphereMesh_a7xoa")
+
+[node name="leftbound2" type="MeshInstance3D" parent="Ground" unique_id=590017900]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.9382806, 0.627, -13.999527)
+mesh = SubResource("SphereMesh_a7xoa")
+
+[node name="leftbound3" type="MeshInstance3D" parent="Ground" unique_id=1526940715]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.183955, 0.627, -10.592958)
+mesh = SubResource("SphereMesh_a7xoa")
 
 [node name="Goose" type="CharacterBody3D" parent="." unique_id=1676621756 groups=["player"]]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.554, 0)

@@ -26,7 +26,10 @@ signal health_changed(health_percent)
 @export var petrify_scene: PackedScene
 
 # --- Variables ---
-var current_health = 100
+var current_health = 100                    ######
+var can_petrify = false                    ######
+var can_snowball = false                    ######
+var can_dash = false                    ######
 var ATTACK_RANGE = 2.0
 var attack_cooldown: float = 0.0
 var current_indicator: Node3D = null
