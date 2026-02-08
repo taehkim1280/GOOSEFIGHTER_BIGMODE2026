@@ -86,10 +86,13 @@ layout_mode = 2
 [node name="CloseShop" type="Button" parent="." unique_id=1366242153]
 process_mode = 3
 layout_mode = 0
-offset_left = 13.0
-offset_top = 605.0
-offset_right = 106.0
-offset_bottom = 636.0
+offset_left = 80.0
+offset_top = 508.0
+offset_right = 312.0
+offset_bottom = 585.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 13
+theme_override_font_sizes/font_size = 36
 text = "Close Shop"
 
 [node name="DescriptionLabel" type="Label" parent="." unique_id=1978761637]
