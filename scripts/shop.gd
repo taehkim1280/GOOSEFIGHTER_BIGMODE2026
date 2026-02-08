@@ -5,14 +5,45 @@ extends Control
 
 # Assign your buttons manually or via group
 @onready var buttons = [$listings/ShopItem1, $listings/ShopItem2, $listings/ShopItem3]
+@onready var desc_label = $DescriptionLabel
 
 var shop_items = {
-	"snowball": { "name": "Snowball", "price": 20, "icon": "snowballicon" },
-	"hat": { "name": "Warm Hat", "price": 10, "icon": "haticon" },
-	"tuque": { "name": "Trapper Hat", "price": 15, "icon": "tuqueicon" },
-	"helmet": { "name": "Safety Helmet", "price": 50, "icon": "helmeticon" },
-	# "mitten": { "name": "Mitten", "price": 15, "icon": "mittenicon" },
-	"hockeyglove": { "name": "Hockey Gloves", "price": 40, "icon": "hockeygloveicon" }
+	"snowball": { 
+		"name": "Snowball", 
+		"price": 20, 
+		"icon": "snowballicon", 
+		"desc": "New Snowball Ability." 
+	},
+	"hat": { 
+		"name": "Warm Hat", 
+		"price": 10, 
+		"icon": "haticon", 
+		"desc": "New Freeze Ability." 
+	},
+	"helmet": { 
+		"name": "Safety Helmet", 
+		"price": 50, 
+		"icon": "helmeticon", 
+		"desc": "New Dash Ability." 
+	},
+	"hockeyglove": { 
+		"name": "Hockey Gloves", 
+		"price": 40, 
+		"icon": "hockeygloveicon", 
+		"desc": "+25 Max Health (Permanent)." 
+	},
+	"tuque": { 
+		"name": "Trapper Hat", 
+		"price": 15, 
+		"icon": "tuqueicon",
+		"desc": "+2 Movement Speed."
+	},
+	"mitten": { 
+		"name": "Mitten", 
+		"price": 15, 
+		"icon": "mittenicon",
+		"desc": "+50% Attack Damage."
+	}
 }
 
 func _input(event):
@@ -112,9 +143,27 @@ func stock_shop():
 		
 		if button.has_node(data["icon"]):
 			button.get_node(data["icon"]).visible = true
+		
+		# 1. Disconnect old signals to prevent errors (if re-stocking)
+		if button.mouse_entered.is_connected(_on_button_hover):
+			button.mouse_entered.disconnect(_on_button_hover)
+		if button.mouse_exited.is_connected(_on_button_exit):
+			button.mouse_exited.disconnect(_on_button_exit)
+			
+		# 2. Connect new signals
+		# We bind 'key' so the function knows WHICH item we are hovering
+		button.mouse_entered.connect(_on_button_hover.bind(key))
+		button.mouse_exited.connect(_on_button_exit)
 
 # Connect this to your "Close Shop" / "Go" Button signal
 func _on_next_level_pressed():
 	self.visible = false
 	get_tree().paused = false # Unpause
 	GameManager.next_level()
+
+func _on_button_hover(item_key):
+	var data = shop_items[item_key]
+	desc_label.text = data["desc"]
+
+func _on_button_exit():
+	desc_label.text = "" # Clear text when mouse leaves
