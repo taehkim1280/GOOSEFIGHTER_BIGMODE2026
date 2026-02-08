@@ -115,45 +115,68 @@ func update_ui():
 	gold_label.text = "x%s" % GameManager.gold
 
 func stock_shop():
-	var available_keys = shop_items.keys()
+	# 1. Get all possible item keys
+	var all_keys = shop_items.keys()
+
+	# 2. Create a list of ONLY items we don't own yet
+	var available_keys = []
+
+	for key in all_keys:
+		var item_name = shop_items[key]["name"]
+		
+		# Ask GameManager: Do we have this?
+		if not GameManager.has_item(item_name):
+			available_keys.append(key)
+			
+	# 3. Shuffle the remaining valid items
 	available_keys.shuffle()
 
+	# 4. Assign them to buttons
 	for i in range(buttons.size()):
 		var button = buttons[i]
 		
-		# Reset button state
-		button.disabled = false
-		button.modulate = Color.WHITE
-		button.visible = true
-		
-		# Get data
-		var key = available_keys[i]
-		var data = shop_items[key]
-		
-		# Setup UI
-		button.get_node("Label").text = data["name"]
-		button.get_node("GoldLabel2").text = "%s G" % data["price"]
-		button.listing_name = key
-		
-		# Handle Icons (Hide all, show correct one)
-		# Assuming icons are children of the button named "snowballicon", etc.
-		for child in button.get_children():
-			if "icon" in child.name.to_lower():
-				child.visible = false
-		
-		if button.has_node(data["icon"]):
-			button.get_node(data["icon"]).visible = true
-		
-		# 1. Disconnect old signals to prevent errors (if re-stocking)
+		# Reset connections from previous refreshes
 		if button.mouse_entered.is_connected(_on_button_hover):
 			button.mouse_entered.disconnect(_on_button_hover)
 		if button.mouse_exited.is_connected(_on_button_exit):
 			button.mouse_exited.disconnect(_on_button_exit)
+
+		# CHECK: Do we have an item for this button?
+		if i < available_keys.size():
+			# YES -> Show the button and setup data
+			button.visible = true
+			button.disabled = false
+			button.modulate = Color.WHITE
 			
-		# 2. Connect new signals
-		# We bind 'key' so the function knows WHICH item we are hovering
-		button.mouse_entered.connect(_on_button_hover.bind(key))
-		button.mouse_exited.connect(_on_button_exit)
+			var key = available_keys[i]
+			var data = shop_items[key]
+			
+			# Setup UI Text
+			button.get_node("Label").text = data["name"]
+			button.get_node("GoldLabel2").text = "%s G" % data["price"]
+			button.listing_name = key
+			
+			# Setup Icons (Hide all, show correct one)
+			for child in button.get_children():
+				if "icon" in child.name.to_lower():
+					child.visible = false
+			
+			if button.has_node(data["icon"]):
+				button.get_node(data["icon"]).visible = true
+				
+			# Connect Signals (Buying & Hovering)
+			# Note: We don't need to disconnect 'pressed' because .bind creates a new callable, 
+			# but it's safer to just disconnect all if you encounter bugs. 
+			# For now, hover logic is enough.
+			button.mouse_entered.connect(_on_button_hover.bind(key))
+			button.mouse_exited.connect(_on_button_exit)
+			
+		else:
+			# NO -> We ran out of items to sell! Hide this button.
+			button.visible = false
+			# OR make it look "Sold Out":
+			# button.disabled = true
+			# button.get_node("Label").text = "SOLD OUT"
 
 # Connect this to your "Close Shop" / "Go" Button signal
 func _on_next_level_pressed():
