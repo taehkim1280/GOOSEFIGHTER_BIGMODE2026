@@ -2,6 +2,12 @@ extends CharacterBody3D
 
 # --- Constants ---
 const SPEED = 3.0
+const WALL_SMASH_THRESHOLD = 100.0 # Damage needed to kill on wall hit
+const FREEZE_STACK_LIMIT = 3
+const SHORT_FREEZE_DURATION = 1.5 # Duration when frozen by 3 stacks
+
+@export_group("VFX")
+@export var death_vfx_scene: PackedScene
 
 # --- Nodes ---
 @onready var label = $Label3D
@@ -11,6 +17,7 @@ const SPEED = 3.0
 @onready var stun_bar = $StunBar
 @onready var stun_fill = $StunBar/Fill
 @onready var stun_bg = $StunBar/Background
+@onready var separation_area = $SeparationArea
 
 # --- Combat Nodes ---
 @onready var attackCD = $AttackCD
@@ -23,16 +30,19 @@ const SPEED = 3.0
 
 # --- State Variables ---
 var player: Node3D = null
-var health_percent: float = 0.0
+var separation_force: float = 4.0
+var accumulated_damage: float = 0.0 # Replaces "health_percent"
+var freeze_stacks: int = 0
+
 var knockback_velocity = Vector3.ZERO
 var is_being_knocked_back = false
 var is_attacking = false
-var attackType = 0 # 0 for peck, 1 for clap
+var attackType = 0 
 
 # --- Freeze/Stun Variables ---
 var is_frozen: bool = false
 var ice_velocity: Vector3 = Vector3.ZERO
-var ice_friction: float = 0.5 # Very slippery
+var ice_friction: float = 0.5 
 var stun_duration_total: float = 0.0
 var stun_timer: float = 0.0
 
@@ -47,12 +57,17 @@ var peckattackRadius = 1
 # --- Clap Settings ---
 var clapattackWindup = 0.8
 
-
 # --- Lifecycle ---
 
 func _ready():
 	add_to_group("enemies")
 	player = get_tree().get_first_node_in_group("player")
+
+	if label:
+		label.no_depth_test = true      # Visible through walls
+		label.outline_render_priority = 19
+		label.render_priority = 20      # Draw on top of Stun Bar
+		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	
 	update_label()
 	
@@ -81,23 +96,42 @@ func _physics_process(delta):
 		# Update Visual Bar
 		if stun_bar and stun_fill and stun_duration_total > 0:
 			var ratio = stun_timer / stun_duration_total
-			# Clamp ensures it doesn't flip or glitch when < 0
 			stun_fill.scale.x = clamp(ratio, 0.0, 1.0)
 
 		# Check if done
 		if stun_timer <= 0:
 			thaw()
-			return # Exit early
+			return 
 
-		# Ice Physics
-		velocity = ice_velocity
-		move_and_slide()
+		# --- Knockback WHILE Frozen ---
+		velocity = ice_velocity + knockback_velocity
 		
+		# FIX: Use 'if' directly to avoid declaring "var collided" twice
+		if move_and_slide():
+			for i in get_slide_collision_count():
+				var collision = get_slide_collision(i)
+				
+				# Bounce logic (Frozen)
+				if knockback_velocity.length() > 2.0:
+					var reflection = knockback_velocity.bounce(collision.get_normal())
+					knockback_velocity = Vector3(reflection.x, 0, reflection.z) * 0.7
+		
+		# --- Decays ---
 		ice_velocity = ice_velocity.move_toward(Vector3.ZERO, ice_friction * delta)
+		knockback_velocity = knockback_velocity.move_toward(Vector3.ZERO, 20.0 * delta)
 		
-		if is_on_wall() and ice_velocity.length() > 5.0:
-			take_damage(50.0, global_position, true)
-			thaw()
+		# Extra Damage if smashed into wall fast (Ice Shatter)
+		# --- FATAL WALL COLLISION LOGIC ---
+		# Condition 1: Must be Frozen (We are in the if is_frozen block)
+		# Condition 2: Must be hitting a wall
+		# Condition 3: Must have > 100 accumulated damage
+		# Condition 4: Must be moving fast enough to "Splat"
+		if is_on_wall():
+			if accumulated_damage >= WALL_SMASH_THRESHOLD and (ice_velocity.length() > 5.0 or knockback_velocity.length() > 10.0):
+				die() # INSTANT KILL
+			elif knockback_velocity.length() > 5.0:
+				# Wall hit, but not enough damage stored to kill
+				take_damage(10.0, Vector3.ZERO, false) # Add a bit more damage
 			
 		return # SKIP NORMAL AI MOVEMENT
 
@@ -111,18 +145,21 @@ func _physics_process(delta):
 	if player and not is_being_knocked_back:
 		var dir = (player.global_position - global_position).normalized()
 		dir.y = 0
+		var chase_velocity = dir * SPEED
+		
+		# 2. Separation Velocity (The Anti-Merge Push)
+		var push_velocity = get_separation_velocity()
+		
+		# Combine them
+		final_velocity = chase_velocity + push_velocity
+
 		look_at(global_position + dir, Vector3.UP)
-		final_velocity = dir * SPEED
 
 	# Combine chase speed and current knockback
 	velocity = final_velocity + knockback_velocity
 
-	var collided = move_and_slide()
-
-	# --------------------------
-	# 3. WALL BOUNCE LOGIC
-	# --------------------------
-	if collided:
+	# FIX: Use 'if' directly here as well
+	if move_and_slide():
 		for i in get_slide_collision_count():
 			var collision = get_slide_collision(i)
 			
@@ -153,40 +190,63 @@ func _physics_process(delta):
 
 # --- Freeze / Stun Mechanics ---
 
+func apply_freeze_stack():
+	if is_frozen: return # Already frozen, ignore stacks
+	
+	freeze_stacks += 1
+	update_label()
+	
+	# Visual feedback for stack (Optional: Flash white?)
+	if mesh:
+		var tween = create_tween()
+		tween.tween_property(mesh, "transparency", 0.5, 0.1)
+		tween.tween_property(mesh, "transparency", 0.0, 0.1)
+
+	if freeze_stacks >= FREEZE_STACK_LIMIT:
+		apply_freeze(SHORT_FREEZE_DURATION)
+		freeze_stacks = 0 # Reset stacks after freezing
+
 func apply_freeze(duration: float):
 	is_frozen = true
 	stun_duration_total = duration
 	stun_timer = duration
+	freeze_stacks = 0 # Clear stacks if force-frozen by ability
 	
-	velocity = Vector3.ZERO # Stop moving instantly
+	velocity = Vector3.ZERO 
 	ice_velocity = Vector3.ZERO
 	
+	anim_player.pause()
 	# Visual: Turn Ice Blue
 	if mesh:
 		var blue_mat = StandardMaterial3D.new()
-		blue_mat.albedo_color = Color(0.3, 0.9, 1.0, 0.6) # Semi-transparent blue
+		blue_mat.albedo_color = Color(0.3, 0.9, 1.0, 0.6) 
 		blue_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		blue_mat.roughness = 0.1 # Shiny
+		blue_mat.render_priority = 1
+		blue_mat.roughness = 0.1 
 		blue_mat.emission_enabled = true
 		blue_mat.emission = Color(0.1, 0.3, 0.8) 
 		mesh.material_override = blue_mat
 
-	# Visual: Show Stun Bar
 	if stun_bar:
 		stun_bar.visible = true
 		stun_fill.scale.x = 1.0
+	
+	update_label()
 
 func thaw():
 	is_frozen = false
+
+	anim_player.play()
+
 	if mesh:
-		mesh.material_override = null # Reset color
+		mesh.material_override = null 
 	if stun_bar:
 		stun_bar.visible = false
+	update_label()
 
 func hit_by_ice_slide(force_dir: Vector3):
-	# Called when hit while frozen (e.g. by Goose dash)
 	if is_frozen:
-		ice_velocity = force_dir * 30.0 # High speed slide
+		ice_velocity = force_dir * 30.0
 
 
 # --- Combat Mechanics ---
@@ -232,33 +292,54 @@ func _on_attack_cd_timeout():
 		if clapArea.overlaps_body(player):
 			player.take_damage(20)
 
-func take_damage(amount: float, source_pos: Vector3, is_lethal: bool = false):
-	health_percent += amount
+func take_damage(amount: float, source_pos: Vector3, apply_kb: bool = true):
+	accumulated_damage += amount
 
-	# ONLY apply new knockback if its NOT a wall hit (source_pos == Vector3.ZERO)
-	if source_pos != Vector3.ZERO:
+	if apply_kb and source_pos != Vector3.ZERO:
 		var dir = (global_position - source_pos).normalized()
 		dir.y = 0
-		var power = 10.0 + (health_percent * 0.5) 
+		# Knockback scales with accumulated damage!
+		var power = 10.0 + (accumulated_damage * 0.5) 
 		apply_knockback(dir * power)
 
-	if is_lethal and health_percent >= 100.0:
-		die()
-
+	# Removed logic that calls die() here. Only Wall hits kill now.
 	update_label()
 
 func apply_knockback(force: Vector3):
 	knockback_velocity = force
 	
 func die():
-	queue_free()
+	print("ENEMY SHATTERED! Attempting to spawn VFX...")
 
+	if death_vfx_scene:
+		print("- VFX Scene is assigned. Instantiating...")
+		var vfx = death_vfx_scene.instantiate()
+		# Add to the WORLD (get_parent), not the Enemy, or it will vanish with the enemy
+		get_parent().add_child(vfx)
+		vfx.global_position = global_position + Vector3(0, 1, 0)
+
+		# var debug_cube = MeshInstance3D.new()
+		# debug_cube.mesh = BoxMesh.new() # Big white cube
+		# get_parent().add_child(debug_cube)
+		# debug_cube.global_position = vfx.global_position
+
+	queue_free()
 
 # --- Visuals & Helpers ---
 
 func update_label():
-	label.text = str(round(health_percent)) + "%"
-	label.modulate = Color(1, 1 - (health_percent/200.0), 1 - (health_percent/200.0))
+	# Show Stacks and Damage
+	var stack_str = ""
+	for i in range(freeze_stacks):
+		stack_str += "*" # 1 star per stack
+	
+	label.text = "%s\n%d DMG" % [stack_str, round(accumulated_damage)]
+	
+	# Color code the label
+	if accumulated_damage >= WALL_SMASH_THRESHOLD:
+		label.modulate = Color(1, 0.2, 0.2) # Red (Execute Ready)
+	else:
+		label.modulate = Color(1, 1, 1) # White
 
 func get_collider_radius(col_node: CollisionShape3D) -> float:
 	var shape = col_node.shape
@@ -284,6 +365,8 @@ func spawn_telegraph(pos: Vector3, radius: float, duration: float) -> void:
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+
+	mat.render_priority = 1
 	
 	indicator.material_override = mat
 	indicator2.material_override = mat
@@ -319,7 +402,7 @@ func setup_stun_bar():
 	# 0.02 = Medium
 	# 0.04 = Large
 	var scale_factor = 0.03 
-	var bar_width_px = 200.0 # Approximate width of your texture in pixels
+	# var bar_width_px = 200.0 # Approximate width of your texture in pixels
 
 	# --- BACKGROUND ---
 	if stun_bg:
@@ -346,7 +429,36 @@ func setup_stun_bar():
 	# --- RE-CENTERING ---
 	# Since we made it bigger, we need to shift it further left to keep it centered.
 	# Formula: -(Width_in_Pixels * Scale_Factor) / 2
-	stun_bar.position.x = -(bar_width_px * scale_factor) / 2.0
+	# stun_bar.position.x = -(bar_width_px * scale_factor) / 2.0
+
+func get_separation_velocity() -> Vector3:
+	var force_vector = Vector3.ZERO
+	if not separation_area: return force_vector
+	
+	var neighbors = separation_area.get_overlapping_bodies()
+	var count = 0
+	
+	for neighbor in neighbors:
+		# Don't push away from yourself!
+		if neighbor == self: continue
+		
+		# Only push away from other enemies (optional check if mask is set right)
+		if neighbor.is_in_group("enemies"):
+			var diff = global_position - neighbor.global_position
+			var dist = diff.length()
+			
+			# The closer they are, the stronger the push
+			if dist > 0:
+				# We divide by dist so closer enemies push HARDER
+				force_vector += diff.normalized() / dist
+				count += 1
+	
+	if count > 0:
+		# Average the push and apply strength
+		force_vector = force_vector / count
+		return force_vector * separation_force
+	
+	return Vector3.ZERO
 
 func _spawn_debug_lines() -> void:
 	if OS.is_debug_build() && false:

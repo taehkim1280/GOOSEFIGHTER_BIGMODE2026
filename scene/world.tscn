@@ -2,12 +2,18 @@
 
 [ext_resource type="Script" uid="uid://bsyfdo60t10pr" path="res://scripts/camera_3d.gd" id="1_bqa5m"]
 [ext_resource type="Texture2D" uid="uid://xuup2ey3xe6" path="res://assets/arena_ortho.jpg" id="2_a0bac"]
+[ext_resource type="Texture2D" uid="uid://b71hk0mw4p08u" path="res://assets/ARENA.png" id="2_a7xoa"]
+[ext_resource type="Texture2D" uid="uid://cuhs3t3jge0iu" path="res://assets/MIDGROUND.png" id="3_hnm4a"]
 [ext_resource type="Script" uid="uid://bfmcigtn3wt52" path="res://scripts/goose.gd" id="3_tmyho"]
 [ext_resource type="PackedScene" uid="uid://bxp3mer64vbso" path="res://scene/debug_attackline.tscn" id="4_hnm4a"]
 [ext_resource type="PackedScene" uid="uid://duqlr3ra2icql" path="res://scene/explosive_cask.tscn" id="5_e4vd1"]
+[ext_resource type="Texture2D" uid="uid://bl6optug7t3e1" path="res://assets/BACKGROUND.png" id="5_vme25"]
 [ext_resource type="PackedScene" uid="uid://bqgvw1avx656m" path="res://scene/petrify_zone.tscn" id="6_1402k"]
+[ext_resource type="Texture2D" uid="uid://ukowhckjwvyw" path="res://assets/LEFT_FG.png" id="6_oiypb"]
+[ext_resource type="Texture2D" uid="uid://ykx2cgjc5e1c" path="res://assets/RIGHT_FG.png" id="7_a81yy"]
 [ext_resource type="Script" uid="uid://cpmpq25kjfyw0" path="res://scripts/enemy_spawner.gd" id="7_ol7uo"]
-[ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://scene/enemy.tscn" id="8_a7xoa"]
+[ext_resource type="PackedScene" uid="uid://dr8pwayknuq8k" path="res://scene/enemy.tscn" id="8_a7xoa"]
+[ext_resource type="Texture2D" uid="uid://ri614icgaknh" path="res://assets/ARCH.png" id="8_qfj6m"]
 [ext_resource type="Script" uid="uid://irod3awcgcod" path="res://scripts/ui_canvas.gd" id="9_vme25"]
 [ext_resource type="Script" uid="uid://ctai7npvyvnuw" path="res://scripts/texture_progress_bar.gd" id="10_oiypb"]
 [ext_resource type="Script" uid="uid://cob1fdew3qike" path="res://scripts/dash_bar.gd" id="11_a81yy"]
@@ -26,7 +32,8 @@ albedo_texture = ExtResource("2_a0bac")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pkg7o"]
 transparency = 1
-albedo_color = Color(0.78775924, 0.78775924, 0.78775924, 1)
+cull_mode = 2
+albedo_color = Color(0.7882353, 0.7882353, 0.7882353, 0)
 metallic_specular = 0.0
 shadow_to_opacity = true
 
@@ -2154,7 +2161,7 @@ fill_to = Vector2(1, 1)
 [node name="World" type="Node3D" unique_id=74445810]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1346949853]
-transform = Transform3D(0.7071067, -0.40860698, 0.57709634, 0, 0.8161375, 0.57785755, -0.7071067, -0.40860698, 0.57709634, 10, 13, 10)
+transform = Transform3D(0.70710677, -0.40860704, 0.57709646, 0, 0.8161376, 0.5778577, -0.70710677, -0.40860704, 0.57709646, 13, 16, 13)
 projection = 1
 fov = 56.5
 size = 14.0
@@ -2162,13 +2169,38 @@ near = 0.296
 far = 165.35
 script = ExtResource("1_bqa5m")
 
-[node name="background" type="Node3D" parent="." unique_id=1350863833]
-transform = Transform3D(0.7071067, 0, 0.70710677, 0, 1, 0, -0.7071067, 0, 0.70710677, -50, -50, -50)
+[node name="Artwork" type="Node3D" parent="." unique_id=1350863833]
+transform = Transform3D(0.7071067, 0, 0.70710677, 0, 1, 0, -0.7071067, 0, 0.70710677, -5, -5, -5)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="background" unique_id=1945786634]
+[node name="Arena" type="Sprite3D" parent="Artwork" unique_id=1502211373]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0)
+texture = ExtResource("2_a7xoa")
+
+[node name="BackgroundOLD" type="MeshInstance3D" parent="Artwork" unique_id=1945786634]
 transform = Transform3D(50, 0, 0, 0, 19.8895, 1.8441344, 0, -19.8895, 1.8441344, 0, 0, 0)
+visible = false
 mesh = SubResource("QuadMesh_gbfbk")
 surface_material_override/0 = SubResource("StandardMaterial3D_ioo17")
+
+[node name="Foreground" type="Sprite3D" parent="Artwork" unique_id=2095847956]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 15.5, 15.5)
+texture = ExtResource("3_hnm4a")
+
+[node name="Background" type="Sprite3D" parent="Artwork" unique_id=2131439926]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, -1, -1)
+texture = ExtResource("5_vme25")
+
+[node name="FGLeft" type="Sprite3D" parent="Artwork" unique_id=881588485]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.70710677, 0.7071067, 0, -0.70710677, 0.7071067, 0, 17, 17)
+texture = ExtResource("6_oiypb")
+
+[node name="FGRight" type="Sprite3D" parent="Artwork" unique_id=1703421328]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 17, 17)
+texture = ExtResource("7_a81yy")
+
+[node name="Cave" type="Sprite3D" parent="Artwork" unique_id=1829818178]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 12, 17)
+texture = ExtResource("8_qfj6m")
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=387867698]
 collision_mask = 0
