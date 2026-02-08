@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 # --- Constants ---
-const SPEED = 7
+# const SPEED = 7
 const ATTACK_COOLDOWN_TIME = 0.3
 const BOMBA_COOLDOWN = 4.0
 const DASH_COOLDOWN = 0.5 
@@ -43,6 +43,7 @@ var buffered_input: String = ""
 const PETRIFY_COOLDOWN = 1.0
 var petrify_indicator: Node3D = null
 var is_frozen: bool = false # Player frozen state
+var speed = 7.0 # New variable
 
 
 # --- Onready Nodes ---
@@ -62,6 +63,7 @@ func _ready():
 
 	# 1. Sync Health
 	current_health = GameManager.current_health
+	speed = GameManager.player_speed
 	call_deferred("emit_signal", "health_changed", 100.0 * current_health / GameManager.max_health)
 
 	# 2. CHECK ITEMS (Sync Abilities)
@@ -134,13 +136,13 @@ func _physics_process(_delta: float) -> void:
 		attack_cooldown -= _delta
 
 	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
+		velocity.x = direction.x * speed
+		velocity.z = direction.z * speed
 		if not is_attacking:
 				look_at(position + direction, Vector3.UP)
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
+		velocity.x = move_toward(velocity.x, 0, speed)
+		velocity.z = move_toward(velocity.z, 0, speed)
 
 	# animation logic
 	# 1st priority is attack
@@ -290,7 +292,8 @@ func attack_towards_mouse():
 			# Avoid hitting the same enemy twice in one frame (rare but possible)
 			if enemy.is_in_group("enemies") and enemy.has_method("take_damage"):
 				# 1. Apply Damage (Accumulates percentage)
-				enemy.take_damage(DAMAGE_PRIMARY, global_position, true)
+				# enemy.take_damage(DAMAGE_PRIMARY, global_position, true)
+				enemy.take_damage(GameManager.player_damage, global_position, true)
 				
 				# 2. Apply Freeze Stack (New Mechanic)
 				if enemy.has_method("apply_freeze_stack"):
