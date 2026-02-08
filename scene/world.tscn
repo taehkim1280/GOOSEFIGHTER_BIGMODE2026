@@ -2777,8 +2777,10 @@ expand_mode = 2
 stretch_mode = 6
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2017987913]
+process_mode = 3
 
 [node name="Shop" parent="CanvasLayer" unique_id=1215132281 instance=ExtResource("22_vme25")]
+process_mode = 3
 visible = false
 
 [connection signal="health_changed" from="Goose" to="UI Canvas" method="_on_goose_health_changed"]

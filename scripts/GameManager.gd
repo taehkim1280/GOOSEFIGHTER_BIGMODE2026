@@ -17,6 +17,20 @@ signal gold_changed
 func _ready():
 	calculate_target()
 
+func _input(event):
+	# Check for a mouse click (Left Button pressed down)
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+
+		# Ask Godot: "What Control node is under the mouse right now?"
+		var hovered_node = get_viewport().gui_get_hovered_control()
+
+		if hovered_node:
+			print("CLICKED ON: ", hovered_node.name)
+			print("   -> Parent: ", hovered_node.get_parent().name)
+			print("   -> Mouse Filter: ", hovered_node.mouse_filter)
+		else:
+			print("CLICKED ON: Nothing (Empty space or non-Control node)")
+
 func start_new_game():
 	# 1. Reset variables (Health, Gold, etc.)
 	reset_game()

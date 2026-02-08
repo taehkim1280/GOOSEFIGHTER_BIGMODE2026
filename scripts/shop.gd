@@ -15,6 +15,20 @@ var shop_items = {
 	"hockeyglove": { "name": "Hockey Gloves", "price": 40, "icon": "hockeygloveicon" }
 }
 
+func _input(event):
+	# Check for a mouse click (Left Button pressed down)
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+
+		# Ask Godot: "What Control node is under the mouse right now?"
+		var hovered_node = get_viewport().gui_get_hovered_control()
+
+		if hovered_node:
+			print("CLICKED ON: ", hovered_node.name)
+			print("   -> Parent: ", hovered_node.get_parent().name)
+			print("   -> Mouse Filter: ", hovered_node.mouse_filter)
+		else:
+			print("CLICKED ON: Nothing (Empty space or non-Control node)")
+
 func _ready():
 	# Hide shop at start
 	self.visible = false
@@ -25,8 +39,7 @@ func _ready():
 	
 	# Setup Buttons
 	for button in buttons:
-		if not button.is_connected("pressed", _on_item_bought):
-			button.pressed.connect(_on_item_bought.bind(button))
+		button.pressed.connect(_on_item_bought.bind(button))
 			
 	update_ui()
 
@@ -40,6 +53,7 @@ func open_shop():
 
 func _on_item_bought(button_pressed):
 	var item_key = button_pressed.listing_name
+	print("Listing pressed:", item_key)
 	var item_data = shop_items[item_key]
 	
 	# Try to buy (GameManager handles the math)
