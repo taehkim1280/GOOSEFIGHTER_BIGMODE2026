@@ -12,7 +12,6 @@
 [ext_resource type="Texture2D" uid="uid://ukowhckjwvyw" path="res://assets/LEFT_FG.png" id="6_oiypb"]
 [ext_resource type="Texture2D" uid="uid://ykx2cgjc5e1c" path="res://assets/RIGHT_FG.png" id="7_a81yy"]
 [ext_resource type="Script" uid="uid://cpmpq25kjfyw0" path="res://scripts/enemy_spawner.gd" id="7_ol7uo"]
-
 [ext_resource type="Texture2D" uid="uid://ri614icgaknh" path="res://assets/ARCH.png" id="8_qfj6m"]
 [ext_resource type="Script" uid="uid://irod3awcgcod" path="res://scripts/ui_canvas.gd" id="9_vme25"]
 [ext_resource type="Script" uid="uid://ctai7npvyvnuw" path="res://scripts/texture_progress_bar.gd" id="10_oiypb"]
@@ -22,11 +21,11 @@
 [ext_resource type="Texture2D" uid="uid://cb5j2kpjdgvkd" path="res://assets/ui/healthbar/healthbarTop.png" id="13_n02kn"]
 [ext_resource type="Texture2D" uid="uid://b6iqiok8t5e07" path="res://assets/goosemodels/goose1textured_goose1 (1)PAINT2_Material.001_BaseColor.png" id="13_puhxk"]
 [ext_resource type="Texture2D" uid="uid://bhf7jgjhfmytv" path="res://assets/ui/healthbar/healthbarMiddle.png" id="14_puhxk"]
-[ext_resource type="PackedScene" uid="uid://b44q3smkdich4" path="res://scene/enemy_white.tscn" id="15_7h02s"]
-[ext_resource type="PackedScene" uid="uid://qc7kb4xat8j" path="res://scene/enemy_grey.tscn" id="16_fb6u6"]
+[ext_resource type="PackedScene" path="res://scene/enemy_white.tscn" id="15_7h02s"]
+[ext_resource type="PackedScene" path="res://scene/enemy_grey.tscn" id="16_fb6u6"]
 [ext_resource type="Script" uid="uid://cwjgepq8pv85c" path="res://scripts/control.gd" id="16_puhxk"]
 [ext_resource type="Texture2D" uid="uid://bejnq51oneshd" path="res://assets/Bomb_ability.png" id="16_qfj6m"]
-[ext_resource type="PackedScene" uid="uid://cnfxnmhstwb72" path="res://scene/enemy_brown.tscn" id="17_spjrp"]
+[ext_resource type="PackedScene" path="res://scene/enemy_brown.tscn" id="17_spjrp"]
 [ext_resource type="Texture2D" uid="uid://b1dv56uapqot3" path="res://assets/Dash_Abiltiy.png" id="18_n02kn"]
 [ext_resource type="Texture2D" uid="uid://6qiifxc2xc2" path="res://assets/Freeze_ability.png" id="20_puhxk"]
 [ext_resource type="PackedScene" uid="uid://d4eo4uytpnwst" path="res://scene/shop.tscn" id="22_vme25"]
@@ -2221,18 +2220,22 @@ transform = Transform3D(1, 0, 0, 0, 0.8161376, -0.5778576, 0, 0.5778576, 0.81613
 
 [node name="Foreground" type="Sprite3D" parent="Artwork/forground/Node3D/Node3D/MOVETHISONE/Node3D" unique_id=2095847956]
 transform = Transform3D(0.9999999, -2.9802322e-08, 0, -1.7763568e-15, 0.7071067, 0.70710677, 0, -0.70710665, 0.7071066, 0, 15.499999, 15.499996)
+render_priority = 10
 texture = ExtResource("3_hnm4a")
 
 [node name="FGLeft" type="Sprite3D" parent="Artwork/forground/Node3D/Node3D/MOVETHISONE/Node3D" unique_id=881588485]
 transform = Transform3D(0.9999999, -2.9802322e-08, -2.9802322e-08, -8.881784e-16, 0.7071067, 0.7071067, 0, -0.70710665, 0.7071066, 0, 17, 16.999996)
+render_priority = 11
 texture = ExtResource("6_oiypb")
 
 [node name="FGRight" type="Sprite3D" parent="Artwork/forground/Node3D/Node3D/MOVETHISONE/Node3D" unique_id=1703421328]
 transform = Transform3D(0.9999999, -2.9802322e-08, 0, -1.7763568e-15, 0.7071067, 0.70710677, 0, -0.70710665, 0.7071066, 0, 17, 16.999996)
+render_priority = 11
 texture = ExtResource("7_a81yy")
 
 [node name="Cave" type="Sprite3D" parent="Artwork/forground/Node3D/Node3D/MOVETHISONE/Node3D" unique_id=1829818178]
 transform = Transform3D(0.9999999, 0, 0, 2.9802319e-08, 0.70710677, 0.70710677, 5.9604645e-08, -0.7071066, 0.7071066, 0, 12, 16.999998)
+render_priority = 11
 texture = ExtResource("8_qfj6m")
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=387867698]
