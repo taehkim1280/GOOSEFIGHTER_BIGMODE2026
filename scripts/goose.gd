@@ -379,6 +379,7 @@ func spawn_ghost_trail():
 	mat.emission_enabled = true
 	mat.emission = Color(0.5, 0.8, 1.0)
 	mat.emission_energy_multiplier = 2.0
+	mat.render_priority = 20.0
 
 	ghost.material_override = mat
 
