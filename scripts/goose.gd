@@ -46,6 +46,8 @@ var is_frozen: bool = false # Player frozen state
 var speed = 7.0 # New variable
 
 
+@onready var message_label = $CanvasLayer/Label
+
 # --- Onready Nodes ---
 @onready var bomba_timer = $BombaTimer
 @onready var dash_duration = $DashDuration
@@ -58,7 +60,23 @@ var speed = 7.0 # New variable
 
 # --- Lifecycle ---
 
+func show_alert(text_to_show: String, duration: float = 2.0):
+	message_label.text = text_to_show
+	message_label.visible = true
+
+	message_label.modulate.a = 0
+	var tween = create_tween()
+	tween.tween_property(message_label, "modulate:a", 1.0, 0.2)
+
+	await get_tree().create_timer(duration).timeout
+
+	var exit_tween = create_tween()
+	exit_tween.tween_property(message_label, "modulate:a", 0.0, 1.0)
+	await exit_tween.finished
+	message_label.visible = false
+
 func _ready():
+
 	dash_hitbox.body_entered.connect(_on_dash_hitbox_body_entered)
 
 	# 1. Sync Health
@@ -71,6 +89,11 @@ func _ready():
 	can_snowball = GameManager.has_item("Snowball")      # Required for Explosive Cask
 	can_dash     = GameManager.has_item("Safety Helmet") # Required for Dash
 	can_petrify  = GameManager.has_item("Warm Hat")      # Required for Petrify
+
+
+
+	var messageFirstLoad = "Kill %s enemies to continue!" % GameManager.kills_required
+	show_alert(messageFirstLoad, 2.0)
 
 func _process(_delta):
 	if Input.is_key_pressed(KEY_P):

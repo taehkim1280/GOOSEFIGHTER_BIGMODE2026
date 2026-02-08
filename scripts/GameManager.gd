@@ -27,6 +27,11 @@ var kills_required: int = 5
 signal level_complete 
 signal gold_changed   
 
+
+@export var ArenaLoadMessage: String = "Kill "
+
+
+
 func _ready():
 	# --- RESIZE CURSORS START ---
 	# Create smaller versions (half size)
