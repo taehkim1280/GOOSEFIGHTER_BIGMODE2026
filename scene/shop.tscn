@@ -5,6 +5,11 @@
 [ext_resource type="Texture2D" uid="uid://xc60cujhvmk5" path="res://assets/ui/shop/coins_ui.png" id="2_phbgv"]
 [ext_resource type="PackedScene" uid="uid://bnuwgixc2jsu1" path="res://scene/shop_item.tscn" id="2_uyq3k"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_uyq3k"]
+font_size = 32
+outline_size = 15
+outline_color = Color(0, 0, 0, 1)
+
 [node name="Shop" type="Control" unique_id=1215132281]
 layout_mode = 3
 anchors_preset = 15
@@ -81,10 +86,18 @@ layout_mode = 2
 [node name="CloseShop" type="Button" parent="." unique_id=1366242153]
 process_mode = 3
 layout_mode = 0
-offset_left = 461.0
-offset_top = 589.0
-offset_right = 554.0
-offset_bottom = 620.0
+offset_left = 13.0
+offset_top = 605.0
+offset_right = 106.0
+offset_bottom = 636.0
 text = "Close Shop"
+
+[node name="DescriptionLabel" type="Label" parent="." unique_id=1978761637]
+layout_mode = 0
+offset_left = 440.0
+offset_top = 584.0
+offset_right = 564.0
+offset_bottom = 629.0
+label_settings = SubResource("LabelSettings_uyq3k")
 
 [connection signal="pressed" from="CloseShop" to="." method="_on_next_level_pressed"]
